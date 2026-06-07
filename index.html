@@ -380,7 +380,8 @@ function showListPage(skipHashUpdate) {
   $listPage.style.display = 'block';
   $detailPage.classList.remove('show');
   if (!skipHashUpdate && window.location.hash) {
-    history.pushState('', document.title, window.location.pathname + window.location.search);
+    // Replace instead of push so browser back doesn't re-enter detail page
+    history.replaceState('', document.title, window.location.pathname + window.location.search);
   }
 }
 
@@ -493,7 +494,8 @@ function navigateDetail(direction) {
   }
   currentDetailIndex = newIndex;
   var item = currentDetailList[currentDetailIndex];
-  window.location.hash = 'detail/' + item.standard + '/' + encodeURIComponent(item.code);
+  // Use replaceState to avoid cluttering browser history on prev/next navigation
+  history.replaceState('', document.title, window.location.pathname + window.location.search + '#detail/' + item.standard + '/' + encodeURIComponent(item.code));
   renderDetail();
   window.scrollTo(0, 0);
 }
