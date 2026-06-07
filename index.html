@@ -324,7 +324,7 @@ function renderList(items, groupByStd) {
 }
 
 // ===== SHOW STANDARD =====
-function showStandard(std) {
+function showStandard(std, skipHash) {
   currentStandard = std;
   if (std === 'all') {
     renderList(ALL_DATA, true);
@@ -340,14 +340,23 @@ function showStandard(std) {
     $searchInput.value = '';
   }
   // Show list page
-  showListPage(true);
+  showListPage();
+  // Push hash for tab routing (skip on initial load / route handling / search clear)
+  if (!skipHash) {
+    if (std === 'all') {
+      // Push a clean URL so back from "全部" goes to previous site
+      history.pushState('', document.title, window.location.pathname + window.location.search);
+    } else {
+      window.location.hash = 'tab/' + std;
+    }
+  }
 }
 
 // ===== SEARCH =====
 function searchAll(query) {
   var q = query.toLowerCase().trim();
   if (!q) {
-    showStandard(currentStandard);
+    showStandard(currentStandard, true);
     return;
   }
   // Switch to "all" tab visual
@@ -372,17 +381,13 @@ function searchAll(query) {
   }
   var allResults = results.isom2017.concat(results.issprom2019);
   renderList(allResults, true);
-  showListPage(true);
+  showListPage();
 }
 
 // ===== SHOW LIST PAGE =====
-function showListPage(skipHashUpdate) {
+function showListPage() {
   $listPage.style.display = 'block';
   $detailPage.classList.remove('show');
-  if (!skipHashUpdate && window.location.hash) {
-    // Replace instead of push so browser back doesn't re-enter detail page
-    history.replaceState('', document.title, window.location.pathname + window.location.search);
-  }
 }
 
 // ===== OPEN DETAIL =====
@@ -517,16 +522,10 @@ $tabBar.addEventListener('click', function(e) {
   showStandard(std);
 });
 
-// Back button
+// Back button — browser history handles the three-level navigation:
+// detail → tab list → all → exit (each step pops one history entry)
 document.getElementById('backBtn').addEventListener('click', function() {
-  if (currentStandard === 'all') {
-    showStandard('all');
-  } else if (currentDetailList.length > 0 && currentDetailIndex >= 0) {
-    showStandard(currentDetailList[currentDetailIndex].standard);
-  } else {
-    showStandard('isom2017');
-  }
-  showListPage();
+  history.back();
 });
 
 // Nav arrows in header
@@ -542,12 +541,12 @@ document.addEventListener('keydown', function(e) {
   if ($detailPage.classList.contains('show')) {
     if (e.key === 'ArrowLeft') { e.preventDefault(); navigateDetail(-1); }
     if (e.key === 'ArrowRight') { e.preventDefault(); navigateDetail(1); }
-    if (e.key === 'Escape') { e.preventDefault(); showListPage(); showStandard(currentStandard === 'all' ? 'all' : (currentDetailList[currentDetailIndex] ? currentDetailList[currentDetailIndex].standard : 'isom2017')); }
+    if (e.key === 'Escape') { e.preventDefault(); history.back(); }
   }
   // Ctrl+K / Cmd+K to focus search
   if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
     e.preventDefault();
-    showListPage();
+    showStandard('all');
     $searchInput.focus();
     $searchInput.select();
   }
@@ -557,9 +556,16 @@ document.addEventListener('keydown', function(e) {
 function handleRoute() {
   var hash = window.location.hash;
   if (!hash || hash === '#') {
-    showStandard(currentStandard);
+    showStandard('all', true);
     return;
   }
+  // Tab route: #tab/<std>
+  var tabMatch = hash.match(/^#tab\/([a-z0-9]+)$/i);
+  if (tabMatch) {
+    showStandard(tabMatch[1], true);
+    return;
+  }
+  // Detail route: #detail/<std>/<code>
   var m = hash.match(/^#detail\/([a-z0-9]+)\/(.+)$/i);
   if (m) {
     var std = m[1];
@@ -577,11 +583,11 @@ function handleRoute() {
       }
     }
   }
-  showStandard('all');
+  showStandard('all', true);
 }
 
 // ===== INITIAL RENDER =====
-showStandard('all');
+showStandard('all', true);
 handleRoute();
 
 window.addEventListener('hashchange', handleRoute);
