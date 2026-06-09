@@ -342,9 +342,11 @@ function renderCard(item) {
     '<div class="text-col">' +
       '<div class="code">' + escHtml(item.code) + '</div>' +
       '<div class="name">' + escHtml(item.name) + '</div>';
-  if (isIsc && item.description) {
-    html += '<div class="en-sub">' + escHtml(item.description) + '</div>';
-  } else {
+  // ISCD: 英文小字 + 中文描述；其他：仅中文描述
+  if (isIsc && item.en) {
+    html += '<div class="en-sub">' + escHtml(item.en) + '</div>';
+  }
+  if (item.description) {
     html += '<div class="desc">' + escHtml(item.description) + '</div>';
   }
   html += '</div></button>';
@@ -495,14 +497,12 @@ function renderDetail() {
   var isIsc = item.standard === 'iscd2018';
   var oldEnSub = document.getElementById('detailEnSub');
   if (oldEnSub) oldEnSub.remove();
-  if (isIsc && item.description) {
-    $detailName.insertAdjacentHTML('afterend', '<div class="en-sub" id="detailEnSub" style="font-size:.85rem;color:#6b7a72;margin-top:2px;margin-bottom:20px;text-align:center">' + escHtml(item.description) + '</div>');
+  if (isIsc && item.en) {
+    $detailName.insertAdjacentHTML('afterend', '<div class="en-sub" id="detailEnSub" style="font-size:.85rem;color:#6b7a72;margin-top:2px;margin-bottom:20px;text-align:center">' + escHtml(item.en) + '</div>');
   }
 
   // Parse description into paragraphs by sentence breaks
   var desc = item.description || '';
-  // For ISC items, description is the English name — already shown as subtitle, skip desc-card
-  if (isIsc) { desc = ''; }
   // Split by Chinese period, exclamation, question mark, or newlines
   var rawParts = desc.split(/(?<=[。！？])/);
   // Further split if a "sentence" is too long (over ~80 chars)
