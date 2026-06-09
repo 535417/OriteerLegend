@@ -26,6 +26,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
   .card:hover{background:rgba(22,27,34,.9)!important;border-color:rgba(45,106,79,.3)!important}
   .card .code{color:#6e7681!important}
   .card .name{color:#e6edf3!important}
+  .card .en-sub{color:#6e7681!important}
   .card .desc{color:#8b949e!important}
   .img-wrap{background:rgba(255,255,255,.04)!important;border-color:rgba(240,246,240,.06)!important}
   .group-header{color:#8b949e!important}
@@ -83,6 +84,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 .card .text-col{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:2px}
 .card .code{font-family:'SF Mono','Cascadia Code','Consolas',monospace;font-size:.75rem;color:#8a9e94;letter-spacing:.03em;line-height:1}
 .card .name{font-size:.9rem;font-weight:600;color:#1a1a2e;line-height:1.3}
+.card .en-sub{font-size:.72rem;color:#8a9e94;line-height:1.3;margin-top:1px}
 .card .desc{font-size:.75rem;color:#6b7a72;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 
 /* ===== Empty ===== */
@@ -334,14 +336,19 @@ document.getElementById('countISS').textContent = '(' + ISSPR_DATA.length + ')';
 // ===== RENDER CARD =====
 function renderCard(item) {
   var label = STD_LABELS[item.standard] + ' ' + item.code + ' ' + item.name;
-  return '<button type="button" class="card" data-std="' + item.standard + '" data-code="' + item.code + '" aria-label="查看' + escHtml(label) + '">' +
+  var isIsc = item.standard === 'iscd2018';
+  var html = '<button type="button" class="card" data-std="' + item.standard + '" data-code="' + item.code + '" aria-label="查看' + escHtml(label) + '">' +
     '<div class="img-col"><div class="img-wrap"><img src="' + item.icon + '" alt="' + escHtml(item.code + ' ' + item.name) + '" loading="lazy"></div></div>' +
     '<div class="text-col">' +
       '<div class="code">' + escHtml(item.code) + '</div>' +
-      '<div class="name">' + escHtml(item.name) + '</div>' +
-      '<div class="desc">' + escHtml(item.description) + '</div>' +
-    '</div>' +
-  '</button>';
+      '<div class="name">' + escHtml(item.name) + '</div>';
+  if (isIsc && item.description) {
+    html += '<div class="en-sub">' + escHtml(item.description) + '</div>';
+  } else {
+    html += '<div class="desc">' + escHtml(item.description) + '</div>';
+  }
+  html += '</div></button>';
+  return html;
 }
 
 function escHtml(s) {
@@ -484,8 +491,18 @@ function renderDetail() {
   $detailCode.textContent = item.code;
   $detailName.textContent = item.name;
 
+  // ISCD 条目：英文原文放在中文名称下方小字
+  var isIsc = item.standard === 'iscd2018';
+  var oldEnSub = document.getElementById('detailEnSub');
+  if (oldEnSub) oldEnSub.remove();
+  if (isIsc && item.description) {
+    $detailName.insertAdjacentHTML('afterend', '<div class="en-sub" id="detailEnSub" style="font-size:.85rem;color:#6b7a72;margin-top:2px;margin-bottom:20px;text-align:center">' + escHtml(item.description) + '</div>');
+  }
+
   // Parse description into paragraphs by sentence breaks
   var desc = item.description || '';
+  // For ISC items, description is the English name — already shown as subtitle, skip desc-card
+  if (isIsc) { desc = ''; }
   // Split by Chinese period, exclamation, question mark, or newlines
   var rawParts = desc.split(/(?<=[。！？])/);
   // Further split if a "sentence" is too long (over ~80 chars)
