@@ -371,21 +371,16 @@ function searchAll(query) {
   });
   currentStandard = 'all';
 
-  var results = { isom2017: [], issprom2019: [] };
+  var results = { isom2017: [], issprom2019: [], iscd2018: [] };
   for (var i = 0; i < ALL_DATA.length; i++) {
     var item = ALL_DATA[i];
-    var haystack = [
-      item.code,
-      item.name,
-      item.description,
-      STD_LABELS[item.standard],
-      item.standard
-    ].join(' ').toLowerCase();
+    // Only search code and name, case-insensitive
+    var haystack = (item.code + ' ' + item.name).toLowerCase();
     if (haystack.includes(q)) {
       results[item.standard].push(item);
     }
   }
-  var allResults = results.isom2017.concat(results.issprom2019);
+  var allResults = results.isom2017.concat(results.issprom2019).concat(results.iscd2018);
   renderList(allResults, true);
   showListPage();
 }
