@@ -6,6 +6,8 @@
 <!ENTITY stB "stroke-linejoin:bevel">
 ]>
 <svg id="mainMap" width="1.9110cm" height="1.3890cm" viewBox="0 0 19.1100 13.8900" style="fill:none;stroke-width:0;fill-rule:evenodd" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" >
+  <rect width="100%" height="100%" fill="white"/>
+
 <desc>Map</desc>
 <g id="scaleTransform" transform="scale(1.00000000)">
 <g id="mainMapContent">

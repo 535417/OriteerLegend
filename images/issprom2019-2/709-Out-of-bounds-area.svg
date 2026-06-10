@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" version="1.1" id="svg22874" width="101.76267" height="88.054001" viewBox="0 0 101.76267 88.054001" sodipodi:docname="ISSprOM 709 Out-of-bounds area.svg" inkscape:version="1.2.2 (732a01da63, 2022-12-09)">
+  <rect width="100%" height="100%" fill="white"/>
+
   <defs id="defs22878">
     <clipPath id="clipPath22890">
       <path d="M 0,66.041 H 76.322 V 0 H 0 Z" id="path22888"></path>
