@@ -352,7 +352,7 @@ function renderCard(item) {
     html += '<div class="en-sub">' + escHtml(name_en) + '</div>';
   }
   if (item.description) {
-    html += '<div class="desc">' + escHtml(item.description) + '</div>';
+    html += '<div class="desc">' + escHtml(item.description).replace(/\n/g, '<br>') + '</div>';
   }
   html += '</div></button>';
   return html;
@@ -516,34 +516,36 @@ function renderDetail() {
     $detailName.insertAdjacentHTML('afterend', '<div class="en-sub" id="detailEnSub" style="font-size:.85rem;color:#6b7a72;margin-top:2px;margin-bottom:20px;text-align:center">' + escHtml(name_en) + '</div>');
   }
 
-  // Parse description into paragraphs by sentence breaks
+  // Parse description into paragraphs
   var desc = item.description || '';
-  // Split by Chinese period, exclamation, question mark, or newlines
-  var rawParts = desc.split(/(?<=[。！？])/);
-  // Further split if a "sentence" is too long (over ~80 chars)
-  var parts = [];
-  for (var i = 0; i < rawParts.length; i++) {
-    var p = rawParts[i].trim();
-    if (!p) continue;
-    // If very long, try to break at spaces or other punctuation every 2-3 sentences
-    parts.push(p);
-  }
-
-  // Group into paragraphs (2-3 sentences each)
-  var paragraphs = [];
-  var buf = '';
-  var count = 0;
-  for (var i = 0; i < parts.length; i++) {
-    if (buf) buf += '';
-    buf += parts[i];
-    count++;
-    if (count >= 3 || i === parts.length - 1) {
-      paragraphs.push(buf);
-      buf = '';
-      count = 0;
+  var paragraphs;
+  // If description contains \n, split by newlines; each line = one paragraph
+  if (desc.indexOf('\n') !== -1) {
+    paragraphs = desc.split(/\n/).filter(function(p) { return p.trim(); });
+  } else {
+    // No newlines: split by Chinese sentence breaks, group 2-3 per paragraph
+    var rawParts = desc.split(/(?<=[。！？])/);
+    var parts = [];
+    for (var i = 0; i < rawParts.length; i++) {
+      var p = rawParts[i].trim();
+      if (!p) continue;
+      parts.push(p);
     }
+    paragraphs = [];
+    var buf = '';
+    var count = 0;
+    for (var i = 0; i < parts.length; i++) {
+      if (buf) buf += '';
+      buf += parts[i];
+      count++;
+      if (count >= 3 || i === parts.length - 1) {
+        paragraphs.push(buf);
+        buf = '';
+        count = 0;
+      }
+    }
+    if (buf.trim()) paragraphs.push(buf);
   }
-  if (buf.trim()) paragraphs.push(buf);
 
   $descCard.innerHTML = paragraphs.map(function(p) {
     return '<p>' + escHtml(p) + '</p>';
