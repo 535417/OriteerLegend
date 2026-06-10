@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" version="1.1" id="svg26900" width="91.415337" height="36.602798" viewBox="0 0 91.415337 36.602798" sodipodi:docname="ISOM 715 Continuing point after map exchange.svg" inkscape:version="1.2.2 (732a01da63, 2022-12-09)">
+  <defs id="defs26904">
+    <clipPath id="clipPath26916">
+      <path d="M 0,27.452 H 68.562 V 0 H 0 Z" id="path26914"></path>
+    </clipPath>
+  </defs>
+  <g id="g26908" inkscape:groupmode="layer" inkscape:label="Page 1" transform="matrix(1.3333333,0,0,-1.3333333,0,36.6028)">
+    <g id="g26910">
+      <g id="g26912" clip-path="url(#clipPath26916)">
+        <g id="g26918" transform="translate(34.4068,9.9482)">
+          <path d="m 0,0 c -4.697,0 -8.505,3.807 -8.505,8.504 0,4.697 3.808,8.504 8.505,8.504 4.696,0 8.503,-3.807 8.503,-8.504 C 8.503,3.807 4.696,0 0,0 Z" style="fill:none;stroke:#b04191;stroke-width:0.992;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:22.926;stroke-dasharray:none;stroke-opacity:1" id="path26920"></path>
+        </g>
+        <g id="g26922" transform="translate(41.1956,14.5384)">
+          <path d="m 0,0 h -13.58 l 6.791,11.762 z" style="fill:none;stroke:#b04191;stroke-width:0.992;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:22.926;stroke-dasharray:none;stroke-opacity:1" id="path26924"></path>
+        </g>
+        <text xml:space="preserve" transform="matrix(1,0,0,-1,0,2.1465)" style="font-variant:normal;font-weight:normal;font-stretch:semi-condensed;font-size:7px;font-family:'Arial Narrow';-inkscape-font-specification:ArialNarrow;writing-mode:lr-tb;fill:#e30613;fill-opacity:1;fill-rule:nonzero;stroke:none" id="text26930">
+          <tspan x="0 3.507 5.1030002 8.2950001 9.8909998 13.083 14.679 16.59 20.733999 24.878" y="0" sodipodi:role="line" id="tspan26926">ø 6.0 (CC)</tspan>
+          <tspan x="57.386002 60.577999 62.174 65.365997" y="-14.231" sodipodi:role="line" id="tspan26928">0.35</tspan>
+        </text>
+      </g>
+    </g>
+  </g>
+</svg>
