@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -112,7 +112,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 .detail-img-wrap{width:240px;height:200px;background:rgba(255,255,255,.8);border-radius:16px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(45,106,79,.1);margin-bottom:16px;overflow:hidden}
 .detail-img-wrap img{max-width:95%;max-height:95%;object-fit:contain;image-rendering:auto}
 .detail-code{font-family:'SF Mono','Cascadia Code','Consolas',monospace;font-size:1.1rem;color:#2D6A4F;margin-bottom:4px;letter-spacing:.04em}
-.detail-name{font-size:1.35rem;font-weight:700;color:#1a1a2e;margin-bottom:20px;text-align:center}
+.detail-name{font-size:1.35rem;font-weight:700;color:#1a1a2e;margin-bottom:4px;text-align:center}
 
 /* Description Card */
 .desc-card{width:100%;background:rgba(255,255,255,.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(45,106,79,.08);border-radius:16px;padding:20px;margin-bottom:24px}
@@ -511,7 +511,7 @@ function renderDetail() {
   var oldEnSub = document.getElementById('detailEnSub');
   if (oldEnSub) oldEnSub.remove();
   if (name_en) {
-    $detailName.insertAdjacentHTML('afterend', '<div class="en-sub" id="detailEnSub" style="font-size:.85rem;color:#6b7a72;margin-top:2px;margin-bottom:20px;text-align:center">' + escHtml(name_en) + '</div>');
+    $detailName.insertAdjacentHTML('afterend', '<div class="en-sub" id="detailEnSub" style="font-size:.85rem;color:#6b7a72;margin-top:2px;margin-bottom:12px;text-align:center">' + escHtml(name_en) + '</div>');
   }
 
   // Parse description into paragraphs
