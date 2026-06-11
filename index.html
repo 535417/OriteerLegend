@@ -30,6 +30,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
   .card .desc{color:#8b949e!important}
   .img-wrap{background:rgba(255,255,255,.04)!important;border-color:rgba(240,246,240,.06)!important}
   .group-header{color:#8b949e!important}
+  .group-header:hover{color:#3fb950!important}
   .detail-nav{background:rgba(22,27,34,.85)!important;border-color:rgba(240,246,240,.08)!important}
   .detail-nav .back-btn{color:#e6edf3!important}
   .detail-nav .nav-count{color:#8b949e!important}
@@ -70,8 +71,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 
 /* ===== Card List ===== */
 .list-wrap{padding:0 12px 80px;max-width:900px;margin:0 auto}
-.group-header{padding:12px 8px 6px;font-size:.78rem;font-weight:600;color:#6b8a7a;display:flex;align-items:center;gap:8px}
+.group-header{padding:12px 8px 6px;font-size:.78rem;font-weight:600;color:#6b8a7a;display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;transition:color .2s}
+.group-header:hover{color:#2D6A4F}
 .group-header::after{content:'';flex:1;height:1px;background:rgba(45,106,79,.12);border-radius:1px}
+.group-header .chevron{width:16px;height:16px;transition:transform .2s;flex-shrink:0}
+.group-header.collapsed .chevron{transform:rotate(-90deg)}
+.group-items{overflow:hidden;transition:max-height .3s ease-out}
+.group-items.collapsed{max-height:0!important}
 
 /* ===== Card ===== */
 .card{display:flex;width:100%;text-align:left;gap:12px;padding:12px;margin-bottom:8px;background:rgba(255,255,255,.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(45,106,79,.08);border-radius:16px;cursor:pointer;transition:all .2s;overflow:hidden;font-family:inherit}
@@ -306,6 +312,29 @@ const STD_ICON_DIR = {
   issprom2019: 'images/issprom2019-2'
 };
 
+// 分类映射
+const CATEGORY_MAP = {
+  1: '地貌',
+  2: '岩石与石块',
+  3: '水系',
+  4: '植被',
+  5: '人造地物',
+  6: '技术符号',
+  7: '比赛符号'
+};
+
+function getCategory(code) {
+  var num = parseInt(code);
+  if (num >= 100 && num < 200) return 1;
+  if (num >= 200 && num < 300) return 2;
+  if (num >= 300 && num < 400) return 3;
+  if (num >= 400 && num < 500) return 4;
+  if (num >= 500 && num < 600) return 5;
+  if (num >= 600 && num < 700) return 6;
+  if (num >= 700) return 7;
+  return 0;
+}
+
 // ===== STATE =====
 let currentStandard = 'all';
 let currentDetailIndex = -1; // index in currentDetailList
@@ -372,28 +401,64 @@ function renderList(items, groupByStd) {
   $emptyState.style.display = 'none';
 
   if (!groupByStd) {
-    $listWrap.innerHTML = items.map(renderCard).join('');
+    // 按分类分组
+    var categories = {};
+    for (var i = 0; i < items.length; i++) {
+      var cat = getCategory(items[i].code);
+      if (!categories[cat]) categories[cat] = [];
+      categories[cat].push(items[i]);
+    }
+    var html = '';
+    var catKeys = Object.keys(categories).sort(function(a, b) { return a - b; });
+    for (var j = 0; j < catKeys.length; j++) {
+      var catId = catKeys[j];
+      var catName = CATEGORY_MAP[catId] || '其他';
+      var catItems = categories[catId];
+      html += '<div class="group-header" data-cat="' + catId + '">';
+      html += '<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
+      html += '<span>' + catName + ' · ' + catItems.length + ' 项</span>';
+      html += '</div>';
+      html += '<div class="group-items" data-cat="' + catId + '">';
+      html += catItems.map(renderCard).join('');
+      html += '</div>';
+    }
+    $listWrap.innerHTML = html;
   } else {
     // Group by standard
-    const groups = {};
-    for (const item of items) {
-      if (!groups[item.standard]) groups[item.standard] = [];
-      groups[item.standard].push(item);
+    var groups = {};
+    for (var i = 0; i < items.length; i++) {
+      if (!groups[items[i].standard]) groups[items[i].standard] = [];
+      groups[items[i].standard].push(items[i]);
     }
-    let html = '';
-    for (const [std, stdItems] of Object.entries(groups)) {
+    var html = '';
+    var stdKeys = Object.keys(groups);
+    for (var j = 0; j < stdKeys.length; j++) {
+      var std = stdKeys[j];
+      var stdItems = groups[std];
       html += '<div class="group-header">' + STD_LABELS[std] + ' · ' + stdItems.length + ' 个结果</div>';
       html += stdItems.map(renderCard).join('');
     }
     $listWrap.innerHTML = html;
   }
 
-  // Attach click handlers
+  // Attach click handlers for cards
   $listWrap.querySelectorAll('.card').forEach(function(card) {
     card.addEventListener('click', function() {
       var std = card.dataset.std;
       var code = card.dataset.id;
       openDetail(std, code);
+    });
+  });
+
+  // Attach click handlers for group headers (collapse/expand)
+  $listWrap.querySelectorAll('.group-header[data-cat]').forEach(function(header) {
+    header.addEventListener('click', function() {
+      var catId = header.dataset.cat;
+      var items = $listWrap.querySelector('.group-items[data-cat="' + catId + '"]');
+      if (items) {
+        header.classList.toggle('collapsed');
+        items.classList.toggle('collapsed');
+      }
     });
   });
 }
