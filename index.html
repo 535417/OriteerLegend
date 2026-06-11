@@ -444,7 +444,8 @@ function renderList(items, groupByStd) {
     var catMap = currentStd === 'iscd2018' ? ISCD_CATEGORY_MAP : CATEGORY_MAP;
     
     for (var i = 0; i < items.length; i++) {
-      var cat = getCategory(items[i].code, items[i].standard);
+      var code = items[i].code || items[i].id || '';
+      var cat = getCategory(code, items[i].standard);
       if (!categories[cat]) categories[cat] = [];
       categories[cat].push(items[i]);
     }
