@@ -315,16 +315,53 @@ const STD_ICON_DIR = {
 // 分类映射
 const CATEGORY_MAP = {
   1: '地貌',
-  2: '岩石与石块',
-  3: '水系',
+  2: '岩壁和石块',
+  3: '水体和沼泽',
   4: '植被',
-  5: '人造地物',
+  5: '人工地物',
   6: '技术符号',
-  7: '比赛符号'
+  7: '线路设计符号'
 };
 
-function getCategory(code) {
+// ISCD 分类映射
+const ISCD_CATEGORY_MAP = {
+  0: '相似特征物的哪一个',
+  1: '地貌',
+  2: '岩壁和石块',
+  3: '水体和沼泽',
+  4: '植被',
+  5: '人工地物',
+  6: '突出地物/特殊地物',
+  8: '外观信息',
+  10: '组合',
+  11: '拐弯',
+  12: '点标旗的位置',
+  13: '其他信息',
+  15: '强制通道'
+};
+
+function getCategory(code, standard) {
   var num = parseInt(code);
+  
+  // ISCD 使用不同的分类逻辑
+  if (standard === 'iscd2018') {
+    if (num === 0) return 0;
+    if (num >= 1 && num < 2) return 1;
+    if (num >= 2 && num < 3) return 2;
+    if (num >= 3 && num < 4) return 3;
+    if (num >= 4 && num < 5) return 4;
+    if (num >= 5 && num < 6) return 5;
+    if (num >= 6 && num < 7) return 6;
+    if (num >= 8 && num < 9) return 8;
+    if (num >= 10 && num < 11) return 10;
+    if (num >= 11 && num < 12) return 11;
+    if (num >= 12 && num < 13) return 12;
+    if (num >= 13 && num < 14) return 13;
+    if (num >= 15 && num < 16) return 15;
+    return -1;
+  }
+  
+  // ISOM/ISSprOM 分类
   if (num >= 100 && num < 200) return 1;
   if (num >= 200 && num < 300) return 2;
   if (num >= 300 && num < 400) return 3;
@@ -332,7 +369,7 @@ function getCategory(code) {
   if (num >= 500 && num < 600) return 5;
   if (num >= 600 && num < 700) return 6;
   if (num >= 700) return 7;
-  return 0;
+  return -1;
 }
 
 // ===== STATE =====
@@ -403,8 +440,11 @@ function renderList(items, groupByStd) {
   if (!groupByStd) {
     // 按分类分组
     var categories = {};
+    var currentStd = items.length > 0 ? items[0].standard : 'isom2017';
+    var catMap = currentStd === 'iscd2018' ? ISCD_CATEGORY_MAP : CATEGORY_MAP;
+    
     for (var i = 0; i < items.length; i++) {
-      var cat = getCategory(items[i].code);
+      var cat = getCategory(items[i].code, items[i].standard);
       if (!categories[cat]) categories[cat] = [];
       categories[cat].push(items[i]);
     }
@@ -412,7 +452,7 @@ function renderList(items, groupByStd) {
     var catKeys = Object.keys(categories).sort(function(a, b) { return a - b; });
     for (var j = 0; j < catKeys.length; j++) {
       var catId = catKeys[j];
-      var catName = CATEGORY_MAP[catId] || '其他';
+      var catName = catMap[catId] || '其他';
       var catItems = categories[catId];
       html += '<div class="group-header" data-cat="' + catId + '">';
       html += '<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
