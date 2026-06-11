@@ -177,7 +177,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 /* Image Fullscreen Overlay */
 .img-overlay{position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;-webkit-tap-highlight-color:transparent;flex-direction:column}
 .img-overlay.show{opacity:1;pointer-events:auto}
-.img-overlay img{max-width:98vw;max-height:88vh;object-fit:contain;border-radius:4px}
+.img-overlay img{width:480px;height:400px;max-width:95vw;max-height:85vh;object-fit:contain;border-radius:4px}
 .img-overlay .overlay-close{position:fixed;top:max(16px,env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.15);border:none;color:#fff;font-size:1.5rem;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;z-index:201}
 .img-overlay .overlay-hint{color:rgba(255,255,255,.45);font-size:.75rem;margin-top:12px;text-align:center;user-select:none}
 
