@@ -563,6 +563,11 @@ function showStandard(std, skipHash) {
   $tabBar.querySelectorAll('.tab').forEach(function(t) {
     t.classList.toggle('active', t.dataset.std === std);
   });
+  // Scroll active tab into view (mobile horizontal scroll)
+  var activeTab = $tabBar.querySelector('.tab.active');
+  if (activeTab) {
+    activeTab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  }
   // Clear search
   if ($searchInput.value) {
     $searchInput.value = '';
