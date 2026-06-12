@@ -575,13 +575,12 @@ function showStandard(std, skipHash) {
   if (savedScroll > 0) {
     requestAnimationFrame(function() { window.scrollTo(0, savedScroll); });
   }
-  // Push hash for tab routing (skip on initial load / route handling / search clear)
+  // Update URL for tab routing (replaceState — tab switches don't add to back history)
   if (!skipHash) {
     if (std === 'all') {
-      // Push a clean URL so back from "全部" goes to previous site
-      history.pushState('', document.title, window.location.pathname + window.location.search);
+      history.replaceState('', document.title, window.location.pathname + window.location.search);
     } else {
-      window.location.hash = 'tab/' + std;
+      history.replaceState('', document.title, window.location.pathname + window.location.search + '#tab/' + std);
     }
   }
 }
@@ -769,7 +768,7 @@ $searchInput.addEventListener('input', function() {
   }, 150);
 });
 
-// Tab clicks — set hash only; handleRoute does the rendering
+// Tab clicks — replaceState, no history accumulation
 $tabBar.addEventListener('click', function(e) {
   var tab = e.target.closest('.tab');
   if (!tab) return;
@@ -780,13 +779,7 @@ $tabBar.addEventListener('click', function(e) {
     $searchInput.value = '';
     $searchClear.classList.remove('show');
   }
-  // Set hash to trigger hashchange → handleRoute → showStandard
-  if (std === 'all') {
-    history.pushState('', document.title, window.location.pathname + window.location.search);
-    handleRoute();
-  } else {
-    window.location.hash = 'tab/' + std;
-  }
+  showStandard(std);
 });
 
 // List click delegation — single listener for cards and group headers
