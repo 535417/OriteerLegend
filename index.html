@@ -596,13 +596,23 @@ function showStandard(std, skipHash) {
       requestAnimationFrame(function() { window.scrollTo(0, savedScroll); });
     }
   }
-  // Update URL for tab routing (replaceState — tab switches don't add to back history)
-  // Exception: leaving \"全部\" uses pushState so home always stays in history
+  // Update URL for tab routing
+  // Policy: tab switches never accumulate history.
+  // Leaving "全部" → pushState (keeps home in history).
+  // Going to "全部" from list → history.back() to home.
+  // Tab-to-tab → replaceState.
   if (!skipHash) {
-    var leavingHome = (prevStandard === 'all' && std !== 'all');
     if (std === 'all') {
-      history.replaceState('', document.title, window.location.pathname + window.location.search);
-    } else if (leavingHome) {
+      if (prevStandard !== 'all' && $listPage.style.display !== 'none') {
+        // On a non-home list → pop back to clean home URL
+        history.back();
+        return;
+      }
+      // On detail page or already home → ensure clean URL
+      if (window.location.hash) {
+        history.replaceState('', document.title, window.location.pathname + window.location.search);
+      }
+    } else if (prevStandard === 'all') {
       history.pushState('', document.title, window.location.pathname + window.location.search + '#tab/' + std);
     } else {
       history.replaceState('', document.title, window.location.pathname + window.location.search + '#tab/' + std);
