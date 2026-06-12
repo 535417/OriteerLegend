@@ -27,6 +27,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
   .card .code{color:#6e7681!important}
   .card .name{color:#e6edf3!important}
   .card .en-sub{color:#6e7681!important}
+  .detail-content .en-sub{color:#8b949e!important}
   .card .desc{color:#8b949e!important}
   .img-wrap{background:rgba(255,255,255,.04)!important;border-color:rgba(240,246,240,.06)!important}
   .group-header{color:#8b949e!important}
@@ -45,9 +46,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
   .empty-state{color:#6e7681!important}
   .toast{background:rgba(22,27,34,.95)!important;color:#e6edf3!important}
   .tab-bar::after{background:linear-gradient(to right,transparent,rgba(13,17,23,.92))!important}
-}
-@media (prefers-color-scheme:dark){
   .desc-card p strong,.desc-card p b{color:#e6edf3!important}
+  .search-clear{background:rgba(255,255,255,.12);color:#8b949e}
+  .search-clear:active{background:rgba(255,255,255,.2)}
+  .scroll-top-btn{background:rgba(63,185,80,.65)}
+  .card:active{background:rgba(45,106,79,.3)!important}
+  .img-overlay{background:rgba(0,0,0,.95)}
+}
+/* ===== Reduced Motion ===== */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition-duration:0s!important;animation-duration:0s!important}
 }
 
 /* ===== Header ===== */
@@ -92,6 +100,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 .card .code{font-family:'SF Mono','Cascadia Code','Consolas',monospace;font-size:.75rem;color:#8a9e94;letter-spacing:.03em;line-height:1}
 .card .name{font-size:.9rem;font-weight:600;color:#1a1a2e;line-height:1.3}
 .card .en-sub{font-size:.72rem;color:#8a9e94;line-height:1.3;margin-top:1px}
+.detail-content .en-sub{color:#6b7a72}
 .card .desc{font-size:.75rem;color:#6b7a72;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 
 /* ===== Empty ===== */
@@ -185,7 +194,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 /* Image Fullscreen Overlay */
 .img-overlay{position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;-webkit-tap-highlight-color:transparent;flex-direction:column}
 .img-overlay.show{opacity:1;pointer-events:auto}
-.img-overlay img{width:480px;height:400px;max-width:95vw;max-height:85vh;object-fit:contain;border-radius:4px}
+.img-overlay img{width:480px;height:400px;max-width:95vw;max-height:85vh;object-fit:contain;border-radius:4px;touch-action:none;transition:transform .15s ease-out}
 .img-overlay .overlay-close{position:fixed;top:max(16px,env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.15);border:none;color:#fff;font-size:1.5rem;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;z-index:201}
 .img-overlay .overlay-hint{color:rgba(255,255,255,.45);font-size:.75rem;margin-top:12px;text-align:center;user-select:none}
 
@@ -198,15 +207,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 /* Detail image click hint */
 .detail-img-wrap{cursor:pointer}
 .detail-img-wrap:active{opacity:.8}
-
-/* Dark mode additions for new components */
-@media (prefers-color-scheme:dark){
-  .search-clear{background:rgba(255,255,255,.12);color:#8b949e}
-  .search-clear:active{background:rgba(255,255,255,.2)}
-  .scroll-top-btn{background:rgba(63,185,80,.65)}
-  .card:active{background:rgba(45,106,79,.3)!important}
-  .img-overlay{background:rgba(0,0,0,.95)}
-}
 </style>
 </head>
 <body>
@@ -374,10 +374,16 @@ function getCategory(code, standard) {
   return -1;
 }
 
+// Normalize field names: ISOM/ISSprOM use code/name/icon, ISCD uses id/name_zh/image
+function getCode(item) { return item.id || item.code; }
+function getName(item) { return item.name_zh || item.name; }
+function getIcon(item) { return item.image || item.icon; }
+
 // ===== STATE =====
 let currentStandard = 'all';
 let currentDetailIndex = -1; // index in currentDetailList
 let currentDetailList = [];  // the list being browsed in detail
+let listScrollPos = {};      // remember scroll position per standard key
 
 // ===== DOM REFS =====
 const $listWrap = document.getElementById('listWrap');
@@ -394,6 +400,10 @@ const $navCount = document.getElementById('navCount');
 const $prevLabel = document.getElementById('prevLabel');
 const $nextLabel = document.getElementById('nextLabel');
 const $toast = document.getElementById('toast');
+const $imgOverlay = document.getElementById('imgOverlay');
+const $overlayImg = document.getElementById('overlayImg');
+const $searchClear = document.getElementById('searchClear');
+const $scrollTopBtn = document.getElementById('scrollTopBtn');
 
 // ===== INIT =====
 document.getElementById('countAll').textContent = '(' + ALL_DATA.length + ')';
@@ -403,14 +413,13 @@ document.getElementById('countISS').textContent = '(' + ISSPR_DATA.length + ')';
 
 // ===== RENDER CARD =====
 function renderCard(item) {
-  // 兼容新旧字段名
-  var id = item.id || item.code;
-  var name_zh = item.name_zh || item.name;
+  var id = getCode(item);
+  var name_zh = getName(item);
   var name_en = item.name_en || '';
-  var image = item.image || item.icon;
+  var image = getIcon(item);
   var label = STD_LABELS[item.standard] + ' ' + id + ' ' + name_zh;
   var html = '<button type="button" class="card" data-std="' + item.standard + '" data-id="' + id + '" aria-label="查看' + escHtml(label) + '">' +
-    '<div class="img-col"><div class="img-wrap"><img src="' + image + '" alt="' + escHtml(id + ' ' + name_zh) + '" loading="lazy"></div></div>' +
+    '<div class="img-col"><div class="img-wrap"><img src="' + image + '" alt="' + escHtml(id + ' ' + name_zh) + '" loading="lazy" onerror="this.alt=\'🖼️\';this.style.width=\'28px\';this.style.height=\'28px\'"></div></div>' +
     '<div class="text-col">' +
       '<div class="code">' + escHtml(id) + '</div>' +
       '<div class="name">' + escHtml(name_zh) + '</div>';
@@ -446,7 +455,7 @@ function renderList(items, groupByStd, isSearch) {
     var catMap = currentStd === 'iscd2018' ? ISCD_CATEGORY_MAP : CATEGORY_MAP;
     
     for (var i = 0; i < items.length; i++) {
-      var code = items[i].code || items[i].id || '';
+      var code = getCode(items[i]) || '';
       var cat = getCategory(code, items[i].standard);
       if (!categories[cat]) categories[cat] = [];
       categories[cat].push(items[i]);
@@ -488,7 +497,7 @@ function renderList(items, groupByStd, isSearch) {
       var catMap = std === 'iscd2018' ? ISCD_CATEGORY_MAP : CATEGORY_MAP;
       var categories = {};
       for (var k = 0; k < stdItems.length; k++) {
-        var code = stdItems[k].code || stdItems[k].id || '';
+        var code = getCode(stdItems[k]) || '';
         var cat = getCategory(code, std);
         if (!categories[cat]) categories[cat] = [];
         categories[cat].push(stdItems[k]);
@@ -535,42 +544,15 @@ function renderList(items, groupByStd, isSearch) {
     $listWrap.innerHTML = html;
   }
 
-  // Attach click handlers for cards
-  $listWrap.querySelectorAll('.card').forEach(function(card) {
-    card.addEventListener('click', function() {
-      var std = card.dataset.std;
-      var code = card.dataset.id;
-      openDetail(std, code);
-    });
-  });
-
-  // Attach click handlers for group headers (collapse/expand)
-  $listWrap.querySelectorAll('.group-header[data-cat]').forEach(function(header) {
-    header.addEventListener('click', function() {
-      var catId = header.dataset.cat;
-      var items = $listWrap.querySelector('.group-items[data-cat="' + catId + '"]');
-      if (items) {
-        header.classList.toggle('collapsed');
-        items.classList.toggle('collapsed');
-      }
-    });
-  });
-
-  // Attach click handlers for standard group headers (collapse/expand in "全部" view)
-  $listWrap.querySelectorAll('.group-header[data-std-group]').forEach(function(header) {
-    header.addEventListener('click', function() {
-      var stdGroup = header.dataset.stdGroup;
-      var items = $listWrap.querySelector('.group-items[data-std-group="' + stdGroup + '"]');
-      if (items) {
-        header.classList.toggle('collapsed');
-        items.classList.toggle('collapsed');
-      }
-    });
-  });
+  // Card and group-header clicks are handled by event delegation on $listWrap (see init)
 }
 
 // ===== SHOW STANDARD =====
 function showStandard(std, skipHash) {
+  // Save scroll position for current standard before switching
+  if (currentStandard !== std && $listPage.style.display !== 'none') {
+    listScrollPos[currentStandard] = window.scrollY;
+  }
   currentStandard = std;
   if (std === 'all') {
     renderList(ALL_DATA, true);
@@ -584,9 +566,15 @@ function showStandard(std, skipHash) {
   // Clear search
   if ($searchInput.value) {
     $searchInput.value = '';
+    $searchClear.classList.remove('show');
   }
   // Show list page
   showListPage();
+  // Restore scroll position for this standard (if returning via back)
+  var savedScroll = listScrollPos[std] || 0;
+  if (savedScroll > 0) {
+    requestAnimationFrame(function() { window.scrollTo(0, savedScroll); });
+  }
   // Push hash for tab routing (skip on initial load / route handling / search clear)
   if (!skipHash) {
     if (std === 'all') {
@@ -615,8 +603,8 @@ function searchAll(query) {
   for (var i = 0; i < ALL_DATA.length; i++) {
     var item = ALL_DATA[i];
     // Only search code/id and name, case-insensitive
-    var sid = item.id || item.code;
-    var sname = item.name_zh || item.name;
+    var sid = getCode(item);
+    var sname = getName(item);
     var haystack = (sid + ' ' + sname).toLowerCase();
     if (haystack.includes(q)) {
       results[item.standard].push(item);
@@ -635,10 +623,12 @@ function showListPage() {
 
 // ===== OPEN DETAIL =====
 function openDetail(std, code) {
+  // Save list scroll position before navigating to detail
+  listScrollPos[currentStandard] = window.scrollY;
   var list = DATA_BY_STD[std];
   currentDetailIndex = -1;
   for (var i = 0; i < list.length; i++) {
-    var cid = list[i].id || list[i].code;
+    var cid = getCode(list[i]);
     if (cid === code) {
       currentDetailList = list;
       currentDetailIndex = i;
@@ -649,7 +639,7 @@ function openDetail(std, code) {
   if (currentDetailIndex === -1) {
     currentDetailList = ALL_DATA;
     for (var i = 0; i < ALL_DATA.length; i++) {
-      var aid = ALL_DATA[i].id || ALL_DATA[i].code;
+      var aid = getCode(ALL_DATA[i]);
       if (aid === code && ALL_DATA[i].standard === std) {
         currentDetailIndex = i;
         break;
@@ -667,11 +657,10 @@ function renderDetail() {
   var item = currentDetailList[currentDetailIndex];
   if (!item) return;
 
-  // 兼容新旧字段名
-  var id = item.id || item.code;
-  var name_zh = item.name_zh || item.name;
+  var id = getCode(item);
+  var name_zh = getName(item);
   var name_en = item.name_en || '';
-  var image = item.image || item.icon;
+  var image = getIcon(item);
 
   $detailImg.src = image;
   $detailImg.alt = id + ' ' + name_zh;
@@ -682,7 +671,7 @@ function renderDetail() {
   var oldEnSub = document.getElementById('detailEnSub');
   if (oldEnSub) oldEnSub.remove();
   if (name_en) {
-    $detailName.insertAdjacentHTML('afterend', '<div class="en-sub" id="detailEnSub" style="font-size:.85rem;color:#6b7a72;margin-top:2px;margin-bottom:12px;text-align:center">' + escHtml(name_en) + '</div>');
+    $detailName.insertAdjacentHTML('afterend', '<div class="en-sub" id="detailEnSub" style="font-size:.85rem;margin-top:2px;margin-bottom:12px;text-align:center">' + escHtml(name_en) + '</div>');
   }
 
   // Parse description into paragraphs
@@ -704,7 +693,6 @@ function renderDetail() {
     var buf = '';
     var count = 0;
     for (var i = 0; i < parts.length; i++) {
-      if (buf) buf += '';
       buf += parts[i];
       count++;
       if (count >= 3 || i === parts.length - 1) {
@@ -728,8 +716,8 @@ function renderDetail() {
   // Previous
   if (currentDetailIndex > 0) {
     var prev = currentDetailList[currentDetailIndex - 1];
-    var pid = prev.id || prev.code;
-    var pname = prev.name_zh || prev.name;
+    var pid = getCode(prev);
+    var pname = getName(prev);
     $prevLabel.textContent = pid + ' ' + pname;
     document.getElementById('bottomPrev').style.visibility = 'visible';
     document.getElementById('prevBtn').style.visibility = 'visible';
@@ -742,8 +730,8 @@ function renderDetail() {
   // Next
   if (currentDetailIndex < total - 1) {
     var next = currentDetailList[currentDetailIndex + 1];
-    var nid = next.id || next.code;
-    var nname = next.name_zh || next.name;
+    var nid = getCode(next);
+    var nname = getName(next);
     $nextLabel.textContent = nid + ' ' + nname;
     document.getElementById('bottomNext').style.visibility = 'visible';
     document.getElementById('nextBtn').style.visibility = 'visible';
@@ -763,7 +751,7 @@ function navigateDetail(direction) {
   }
   currentDetailIndex = newIndex;
   var item = currentDetailList[currentDetailIndex];
-  var nid = item.id || item.code;
+  var nid = getCode(item);
   // Use replaceState to avoid cluttering browser history on prev/next navigation
   history.replaceState('', document.title, window.location.pathname + window.location.search + '#detail/' + item.standard + '/' + encodeURIComponent(nid));
   renderDetail();
@@ -771,20 +759,55 @@ function navigateDetail(direction) {
 }
 
 // ===== EVENT LISTENERS =====
-// Search input
+// Search input with debounce (150ms)
+var searchDebounceTimer;
 $searchInput.addEventListener('input', function() {
-  searchAll(this.value);
+  clearTimeout(searchDebounceTimer);
+  var val = this.value;
+  searchDebounceTimer = setTimeout(function() {
+    searchAll(val);
+  }, 150);
 });
 
-// Tab clicks
+// Tab clicks — set hash only; handleRoute does the rendering
 $tabBar.addEventListener('click', function(e) {
   var tab = e.target.closest('.tab');
   if (!tab) return;
   var std = tab.dataset.std;
+  // Skip if already on this tab
+  if (std === currentStandard) return;
   if ($searchInput.value) {
     $searchInput.value = '';
+    $searchClear.classList.remove('show');
   }
-  showStandard(std);
+  // Set hash to trigger hashchange → handleRoute → showStandard
+  if (std === 'all') {
+    history.pushState('', document.title, window.location.pathname + window.location.search);
+    handleRoute();
+  } else {
+    window.location.hash = 'tab/' + std;
+  }
+});
+
+// List click delegation — single listener for cards and group headers
+$listWrap.addEventListener('click', function(e) {
+  // Card click → open detail
+  var card = e.target.closest('.card');
+  if (card) {
+    openDetail(card.dataset.std, card.dataset.id);
+    return;
+  }
+  // Group header click → toggle collapse
+  var header = e.target.closest('.group-header');
+  if (header) {
+    if (header.dataset.cat) {
+      var items = $listWrap.querySelector('.group-items[data-cat="' + header.dataset.cat + '"]');
+      if (items) { header.classList.toggle('collapsed'); items.classList.toggle('collapsed'); }
+    } else if (header.dataset.stdGroup) {
+      var items = $listWrap.querySelector('.group-items[data-std-group="' + header.dataset.stdGroup + '"]');
+      if (items) { header.classList.toggle('collapsed'); items.classList.toggle('collapsed'); }
+    }
+  }
 });
 
 // Back button — browser history handles the three-level navigation:
@@ -813,6 +836,15 @@ document.addEventListener('keydown', function(e) {
         e.preventDefault();
         history.back();
       }
+    }
+  } else if (e.key === 'Escape') {
+    // On list page: clear search first, only then go back
+    if ($imgOverlay.classList.contains('show')) {
+      closeOverlay();
+    } else if ($searchInput.value) {
+      $searchInput.value = '';
+      $searchClear.classList.remove('show');
+      showStandard(currentStandard, true);
     }
   }
   // Ctrl+K / Cmd+K to focus search
@@ -846,7 +878,7 @@ function handleRoute() {
     var code = decodeURIComponent(m[2]);
     var list = DATA_BY_STD[std] || ALL_DATA;
     for (var i = 0; i < list.length; i++) {
-      var lid = list[i].id || list[i].code;
+      var lid = getCode(list[i]);
       if (lid === code) {
         currentDetailList = list;
         currentDetailIndex = i;
@@ -862,7 +894,6 @@ function handleRoute() {
 }
 
 // ===== INITIAL RENDER =====
-showStandard('all', true);
 handleRoute();
 
 window.addEventListener('hashchange', handleRoute);
@@ -887,7 +918,6 @@ console.log('  ISOM 2017-2: ' + ISOM_DATA.length + ' 个符号');
 console.log('  ISSprOM 2019-2: ' + ISSPR_DATA.length + ' 个符号');
 
 // ===== SEARCH CLEAR BUTTON =====
-var $searchClear = document.getElementById('searchClear');
 $searchInput.addEventListener('input', function() {
   if (this.value) {
     $searchClear.classList.add('show');
@@ -903,12 +933,11 @@ $searchClear.addEventListener('click', function() {
 });
 
 // ===== IMAGE FULLSCREEN VIEWER =====
-var $imgOverlay = document.getElementById('imgOverlay');
-var $overlayImg = document.getElementById('overlayImg');
 
 document.querySelector('.detail-img-wrap').addEventListener('click', function() {
   $overlayImg.src = $detailImg.src;
   $overlayImg.alt = $detailImg.alt;
+  $overlayImg.style.transform = '';
   $imgOverlay.classList.add('show');
   document.body.style.overflow = 'hidden';
 });
@@ -917,10 +946,69 @@ function closeOverlay() {
   $imgOverlay.classList.remove('show');
   document.body.style.overflow = '';
 }
+
+// Click background or close button → close; clicking image does NOT close
 $imgOverlay.addEventListener('click', function(e) {
-  if (e.target === $imgOverlay || e.target === $overlayImg) closeOverlay();
+  if (e.target === $imgOverlay) closeOverlay();
 });
 document.getElementById('overlayClose').addEventListener('click', closeOverlay);
+
+// Pinch-to-zoom on overlay image
+(function() {
+  var overlayScale = 1;
+  var initialDist = 0;
+  var initialScale = 1;
+  var lastTapTime = 0;
+
+  function getDist(touches) {
+    return Math.hypot(
+      touches[0].clientX - touches[1].clientX,
+      touches[0].clientY - touches[1].clientY
+    );
+  }
+
+  function setScale(s) {
+    overlayScale = Math.min(5, Math.max(0.3, s));
+    $overlayImg.style.transform = 'scale(' + overlayScale + ')';
+  }
+
+  function resetOverlayZoom() {
+    overlayScale = 1;
+    $overlayImg.style.transform = '';
+  }
+
+  // Expose reset for external use
+  window.resetOverlayZoom = resetOverlayZoom;
+
+  $overlayImg.addEventListener('touchstart', function(e) {
+    if (e.touches.length === 2) {
+      initialDist = getDist(e.touches);
+      initialScale = overlayScale;
+      // Disable transition during pinch for responsiveness
+      $overlayImg.style.transition = 'none';
+    }
+  }, { passive: true });
+
+  $overlayImg.addEventListener('touchmove', function(e) {
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      var dist = getDist(e.touches);
+      setScale(initialScale * (dist / initialDist));
+    }
+  }, { passive: false });
+
+  $overlayImg.addEventListener('touchend', function(e) {
+    // Restore smooth transition
+    $overlayImg.style.transition = '';
+
+    // Double-tap to reset zoom
+    var now = Date.now();
+    if (now - lastTapTime < 300 && e.touches.length === 0) {
+      resetOverlayZoom();
+    }
+    lastTapTime = now;
+  });
+})();
 
 // ===== SWIPE NAVIGATION (Touch) =====
 (function() {
@@ -990,12 +1078,16 @@ document.getElementById('overlayClose').addEventListener('click', closeOverlay);
 })();
 
 // ===== SCROLL TO TOP BUTTON =====
-var $scrollTopBtn = document.getElementById('scrollTopBtn');
 var scrollTicking = false;
+
+// Detail image fallback on load error
+$detailImg.addEventListener('error', function() {
+  this.alt = '🖼️ 图片加载失败';
+});
 window.addEventListener('scroll', function() {
   if (!scrollTicking) {
     requestAnimationFrame(function() {
-      var listVisible = $listPage.style.display !== 'none';
+      var listVisible = $listPage.style.display !== 'none' && !$detailPage.classList.contains('show');
       if (listVisible && window.scrollY > 400) {
         $scrollTopBtn.classList.add('show');
       } else {
