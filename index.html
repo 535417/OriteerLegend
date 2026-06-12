@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -44,6 +44,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
   .bottom-nav .nav-btn:hover{background:rgba(45,106,79,.25)!important;border-color:#3fb950!important}
   .empty-state{color:#6e7681!important}
   .toast{background:rgba(22,27,34,.95)!important;color:#e6edf3!important}
+  .tab-bar::after{background:linear-gradient(to right,transparent,rgba(13,17,23,.92))!important}
 }
 @media (prefers-color-scheme:dark){
   .desc-card p strong,.desc-card p b{color:#e6edf3!important}
@@ -146,8 +147,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 /* ===== Responsive ===== */
 @media (max-width:640px){
   .header h1{font-size:1.1rem}
-  .tab-bar{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-left:8px;padding-right:8px;gap:6px}
+  .tab-bar{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-left:8px;padding-right:32px;gap:6px;position:relative}
   .tab-bar::-webkit-scrollbar{display:none}
+  .tab-bar::after{content:'';position:absolute;right:0;top:0;bottom:0;width:28px;background:linear-gradient(to right,transparent,rgba(240,246,243,.92));pointer-events:none;z-index:1}
   .tab{font-size:.75rem;padding:6px 14px;flex-shrink:0;white-space:nowrap}
   .card{padding:10px;gap:10px}
   .card .img-col{width:60px}
@@ -222,8 +224,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
   </div>
   <div class="tab-bar" id="tabBar">
     <button class="tab active" data-std="all">全部<span class="count" id="countAll"></span></button>
-    <button class="tab" data-std="isom2017">ISOM 2017-2<span class="count" id="countISOM"></span></button>
     <button class="tab" data-std="issprom2019">ISSprOM 2019-2<span class="count" id="countISS"></span></button>
+    <button class="tab" data-std="isom2017">ISOM 2017-2<span class="count" id="countISOM"></span></button>
     <button class="tab" data-std="iscd2018">ISCD 2018<span class="count" id="countISCD"></span></button>
   </div>
 </div>
