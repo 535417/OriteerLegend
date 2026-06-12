@@ -389,7 +389,7 @@ let currentDetailIndex = -1; // index in currentDetailList
 let currentDetailList = [];  // the list being browsed in detail
 let listScrollPos = {};      // remember scroll position per standard key
 let listScrollToItem = {};  // remember which item code to scroll to per standard
-let pendingTabSwitch = null; // tab to switch to after going back from detail
+
 
 // ===== DOM REFS =====
 const $listWrap = document.getElementById('listWrap');
@@ -557,12 +557,11 @@ function renderList(items, groupByStd, isSearch) {
 
 // ===== SHOW STANDARD =====
 function showStandard(std, skipHash) {
-  // If on detail page and switching to a tab, go back to list first
-  // to avoid leaving orphan tab entries in history
+  // If on detail page and switching to a tab, replaceState to skip detail entry
+  // The old tab entry in history is cleaned up by handleRoute's stale-tab detection
   if (!skipHash && $detailPage.classList.contains('show') && std !== 'all') {
-    pendingTabSwitch = std;
-    history.back();
-    return;
+    history.replaceState('', document.title, window.location.pathname + window.location.search + '#tab/' + std);
+    // Fall through — showStandard will render the new tab list
   }
   // Save scroll position for current standard before switching
   var prevStandard = currentStandard;
@@ -915,6 +914,12 @@ function handleRoute() {
   // Tab route: #tab/<std>
   var tabMatch = hash.match(/^#tab\/([a-z0-9]+)$/i);
   if (tabMatch) {
+    // If this tab doesn't match currentStandard, it's a stale entry
+    // left from switching tabs on a detail page — go back one more step to home
+    if (tabMatch[1] !== currentStandard) {
+      history.back();
+      return;
+    }
     showStandard(tabMatch[1], true);
     return;
   }
@@ -938,13 +943,6 @@ function handleRoute() {
     }
   }
   showStandard('all', true);
-
-  // After route is handled, execute any pending tab switch (from detail page)
-  if (pendingTabSwitch && !$detailPage.classList.contains('show')) {
-    var target = pendingTabSwitch;
-    pendingTabSwitch = null;
-    showStandard(target);
-  }
 }
 
 // ===== INITIAL RENDER =====
