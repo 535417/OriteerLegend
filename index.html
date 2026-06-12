@@ -114,7 +114,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 .detail-page.show{display:block}
 
 /* Detail Nav — sticky below header, compact */
-.detail-nav{position:sticky;top:0;z-index:101;display:flex;align-items:center;justify-content:space-between;padding:5px 10px;background:rgba(240,246,243,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(45,106,79,.1)}
+.detail-nav{position:sticky;top:0;z-index:101;display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:rgba(240,246,243,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(45,106,79,.1)}
 .detail-nav .back-btn{display:flex;align-items:center;gap:3px;padding:4px 8px;border:none;background:transparent;color:#2D6A4F;font-size:.8rem;cursor:pointer;border-radius:6px;transition:all .15s;font-family:inherit}
 .detail-nav .back-btn:hover{background:rgba(45,106,79,.1)}
 .detail-nav .back-btn svg{width:18px;height:18px}
@@ -395,6 +395,8 @@ const $listWrap = document.getElementById('listWrap');
 const $emptyState = document.getElementById('emptyState');
 const $listPage = document.getElementById('listPage');
 const $detailPage = document.getElementById('detailPage');
+const $detailNav = document.querySelector('.detail-nav');
+const $header = document.querySelector('.header');
 const $searchInput = document.getElementById('searchInput');
 const $tabBar = document.getElementById('tabBar');
 const $detailImg = document.getElementById('detailImg');
@@ -675,7 +677,16 @@ function openDetail(std, code) {
   window.scrollTo(0, 0);
 }
 
+// Sync detail-nav sticky top to header height
+function syncDetailNavTop() {
+  if ($detailNav && $header) {
+    $detailNav.style.top = $header.offsetHeight + 'px';
+  }
+}
+window.addEventListener('resize', syncDetailNavTop);
+
 function renderDetail() {
+  syncDetailNavTop();
   var item = currentDetailList[currentDetailIndex];
   if (!item) return;
 
