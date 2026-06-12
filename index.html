@@ -551,8 +551,9 @@ function renderList(items, groupByStd, isSearch) {
 // ===== SHOW STANDARD =====
 function showStandard(std, skipHash) {
   // Save scroll position for current standard before switching
-  if (currentStandard !== std && $listPage.style.display !== 'none') {
-    listScrollPos[currentStandard] = window.scrollY;
+  var prevStandard = currentStandard;
+  if (prevStandard !== std && $listPage.style.display !== 'none') {
+    listScrollPos[prevStandard] = window.scrollY;
   }
   currentStandard = std;
   if (std === 'all') {
@@ -590,9 +591,13 @@ function showStandard(std, skipHash) {
     }
   }
   // Update URL for tab routing (replaceState — tab switches don't add to back history)
+  // Exception: leaving \"全部\" uses pushState so home always stays in history
   if (!skipHash) {
+    var leavingHome = (prevStandard === 'all' && std !== 'all');
     if (std === 'all') {
       history.replaceState('', document.title, window.location.pathname + window.location.search);
+    } else if (leavingHome) {
+      history.pushState('', document.title, window.location.pathname + window.location.search + '#tab/' + std);
     } else {
       history.replaceState('', document.title, window.location.pathname + window.location.search + '#tab/' + std);
     }
@@ -903,6 +908,13 @@ function handleRoute() {
 }
 
 // ===== INITIAL RENDER =====
+// Ensure \"全部\" is always at the bottom of history — back always passes home before exit
+var savedHash = window.location.hash;
+if (savedHash) {
+  // Replace the browser-loaded URL with clean home, then push the hash back on top
+  history.replaceState('', document.title, window.location.pathname + window.location.search);
+  history.pushState('', document.title, window.location.pathname + window.location.search + savedHash);
+}
 handleRoute();
 
 window.addEventListener('hashchange', handleRoute);
