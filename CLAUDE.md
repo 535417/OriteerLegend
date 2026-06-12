@@ -19,7 +19,7 @@ images/
 
 ### 数据层（3 套图例）
 - `ISOM_DATA` — ISOM 2017-2（110 条，SVG 图标，含 name_en 英文名）
-- `ISSPR_DATA` — ISSprOM 2019-2（99 条，SVG 图标，含 name_en 英文名）
+- `ISSPR_DATA` — ISSprOM 2019-2（100 条，SVG 图标，含 name_en 英文名）
 - `ISC_DATA` — ISCD 2018（172 条，PNG 图标，含 name_en 英文名）
 - `ALL_DATA = [...ISSPR_DATA, ...ISOM_DATA, ...ISC_DATA]`
 - ISOM/ISSprOM 数据格式：`{ code, name, name_en, description, icon, standard }`
