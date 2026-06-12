@@ -431,7 +431,7 @@ function escHtml(s) {
 }
 
 // ===== RENDER LIST =====
-function renderList(items, groupByStd) {
+function renderList(items, groupByStd, isSearch) {
   if (items.length === 0) {
     $listWrap.innerHTML = '';
     $emptyState.style.display = 'block';
@@ -440,7 +440,7 @@ function renderList(items, groupByStd) {
   $emptyState.style.display = 'none';
 
   if (!groupByStd) {
-    // 按分类分组
+    // 按分类分组（单标准视图）
     var categories = {};
     var currentStd = items.length > 0 ? items[0].standard : 'isom2017';
     var catMap = currentStd === 'iscd2018' ? ISCD_CATEGORY_MAP : CATEGORY_MAP;
@@ -466,23 +466,69 @@ function renderList(items, groupByStd) {
       html += '</div>';
     }
     $listWrap.innerHTML = html;
-  } else {
-    // Group by standard
+  } else if (isSearch) {
+    // 搜索结果：按标准分组，每个标准内再按分类分组（默认展开）
     var groups = {};
     for (var i = 0; i < items.length; i++) {
       if (!groups[items[i].standard]) groups[items[i].standard] = [];
       groups[items[i].standard].push(items[i]);
     }
     var html = '';
-    var stdKeys = Object.keys(groups);
-    for (var j = 0; j < stdKeys.length; j++) {
-      var std = stdKeys[j];
+    var stdOrder = ['issprom2019', 'isom2017', 'iscd2018'];
+    for (var s = 0; s < stdOrder.length; s++) {
+      var std = stdOrder[s];
+      if (!groups[std] || groups[std].length === 0) continue;
       var stdItems = groups[std];
-      html += '<div class="group-header collapsed" data-std-group="' + std + '">';
+      html += '<div class="group-header" data-std-group="' + std + '">';
       html += '<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
       html += '<span>' + STD_LABELS[std] + ' <small style="opacity:.65;font-size:.68rem">· ' + stdItems.length + ' 个结果</small></span>';
       html += '</div>';
-      html += '<div class="group-items collapsed" data-std-group="' + std + '">';
+      html += '<div class="group-items" data-std-group="' + std + '">';
+      // 按分类分组
+      var catMap = std === 'iscd2018' ? ISCD_CATEGORY_MAP : CATEGORY_MAP;
+      var categories = {};
+      for (var k = 0; k < stdItems.length; k++) {
+        var code = stdItems[k].code || stdItems[k].id || '';
+        var cat = getCategory(code, std);
+        if (!categories[cat]) categories[cat] = [];
+        categories[cat].push(stdItems[k]);
+      }
+      var catKeys = Object.keys(categories).sort(function(a, b) { return a - b; });
+      for (var c = 0; c < catKeys.length; c++) {
+        var catId = catKeys[c];
+        var catName = catMap[catId] || '其他';
+        var catItems = categories[catId];
+        html += '<div class="group-header" data-cat="' + catId + '" style="padding-left:20px">';
+        html += '<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
+        html += '<span>' + catName + ' <small style="opacity:.65;font-size:.68rem">· ' + catItems.length + ' 项</small></span>';
+        html += '</div>';
+        html += '<div class="group-items" data-cat="' + catId + '">';
+        html += catItems.map(renderCard).join('');
+        html += '</div>';
+      }
+      html += '</div>';
+    }
+    $listWrap.innerHTML = html;
+  } else {
+    // "全部"视图：按标准分组，ISSprOM 默认展开，其他折叠
+    var groups = {};
+    for (var i = 0; i < items.length; i++) {
+      if (!groups[items[i].standard]) groups[items[i].standard] = [];
+      groups[items[i].standard].push(items[i]);
+    }
+    var html = '';
+    var stdOrder = ['issprom2019', 'isom2017', 'iscd2018'];
+    for (var s = 0; s < stdOrder.length; s++) {
+      var std = stdOrder[s];
+      if (!groups[std] || groups[std].length === 0) continue;
+      var stdItems = groups[std];
+      var isCollapsed = std !== 'issprom2019';
+      var collapsedCls = isCollapsed ? ' collapsed' : '';
+      html += '<div class="group-header' + collapsedCls + '" data-std-group="' + std + '">';
+      html += '<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
+      html += '<span>' + STD_LABELS[std] + ' <small style="opacity:.65;font-size:.68rem">· ' + stdItems.length + ' 个结果</small></span>';
+      html += '</div>';
+      html += '<div class="group-items' + collapsedCls + '" data-std-group="' + std + '">';
       html += stdItems.map(renderCard).join('');
       html += '</div>';
     }
@@ -577,7 +623,7 @@ function searchAll(query) {
     }
   }
   var allResults = results.issprom2019.concat(results.isom2017).concat(results.iscd2018);
-  renderList(allResults, true);
+  renderList(allResults, true, true);
   showListPage();
 }
 
