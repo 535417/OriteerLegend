@@ -384,6 +384,7 @@ let currentStandard = 'all';
 let currentDetailIndex = -1; // index in currentDetailList
 let currentDetailList = [];  // the list being browsed in detail
 let listScrollPos = {};      // remember scroll position per standard key
+let listScrollToItem = {};  // remember which item code to scroll to per standard
 
 // ===== DOM REFS =====
 const $listWrap = document.getElementById('listWrap');
@@ -576,9 +577,17 @@ function showStandard(std, skipHash) {
   // Show list page
   showListPage();
   // Restore scroll position for this standard (if returning via back)
-  var savedScroll = listScrollPos[std] || 0;
-  if (savedScroll > 0) {
-    requestAnimationFrame(function() { window.scrollTo(0, savedScroll); });
+  var scrollToCode = listScrollToItem[std];
+  if (scrollToCode) {
+    requestAnimationFrame(function() {
+      var card = $listWrap.querySelector('.card[data-id="' + scrollToCode + '"]');
+      if (card) { card.scrollIntoView({ behavior: 'instant', block: 'center' }); }
+    });
+  } else {
+    var savedScroll = listScrollPos[std] || 0;
+    if (savedScroll > 0) {
+      requestAnimationFrame(function() { window.scrollTo(0, savedScroll); });
+    }
   }
   // Update URL for tab routing (replaceState — tab switches don't add to back history)
   if (!skipHash) {
@@ -756,6 +765,8 @@ function navigateDetail(direction) {
   currentDetailIndex = newIndex;
   var item = currentDetailList[currentDetailIndex];
   var nid = getCode(item);
+  // Track which item to scroll to when returning to list
+  listScrollToItem[item.standard] = nid;
   // Use replaceState to avoid cluttering browser history on prev/next navigation
   history.replaceState('', document.title, window.location.pathname + window.location.search + '#detail/' + item.standard + '/' + encodeURIComponent(nid));
   renderDetail();
@@ -1024,6 +1035,8 @@ document.getElementById('overlayClose').addEventListener('click', closeOverlay);
   document.addEventListener('touchstart', function(e) {
     if (!$detailPage.classList.contains('show')) return;
     if ($imgOverlay.classList.contains('show')) return;
+    // Don't intercept touches in header (tab-bar scroll etc.)
+    if (e.target.closest('.header')) { startX = 0; startY = 0; return; }
     if (e.touches.length !== 1) { resetSwipe(); return; }
     startX = e.touches[0].clientX;
     startY = e.touches[0].clientY;
