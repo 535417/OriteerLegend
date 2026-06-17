@@ -474,11 +474,11 @@ function renderList(items, groupByStd, isSearch) {
       var catId = catKeys[j];
       var catName = catMap[catId] || '其他';
       var catItems = categories[catId];
-      html += '<div class="group-header" data-cat="' + catId + '">';
+      html += '<div class="group-header collapsed" data-cat="' + catId + '">';
       html += '<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
       html += '<span>' + catName + ' <small style="opacity:.65;font-size:.68rem">· ' + catItems.length + ' 项</small></span>';
       html += '</div>';
-      html += '<div class="group-items" data-cat="' + catId + '">';
+      html += '<div class="group-items collapsed" data-cat="' + catId + '">';
       html += catItems.map(renderCard).join('');
       html += '</div>';
     }
@@ -594,13 +594,17 @@ function showStandard(std, skipHash) {
   var scrollToCode = listScrollToItem[std];
   if (scrollToCode) {
     requestAnimationFrame(function() {
+      $listWrap.offsetHeight; // 强制重排，确保布局完成
       var card = $listWrap.querySelector('.card[data-id="' + scrollToCode + '"]');
       if (card) { card.scrollIntoView({ behavior: 'instant', block: 'center' }); }
     });
   } else {
     var savedScroll = listScrollPos[std] || 0;
     if (savedScroll > 0) {
-      requestAnimationFrame(function() { window.scrollTo(0, savedScroll); });
+      requestAnimationFrame(function() {
+        $listWrap.offsetHeight; // 强制重排，确保布局完成
+        window.scrollTo(0, savedScroll);
+      });
     }
   }
   // Update URL for tab routing
