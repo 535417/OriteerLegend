@@ -389,6 +389,9 @@ let currentDetailIndex = -1; // index in currentDetailList
 let currentDetailList = [];  // the list being browsed in detail
 let listScrollPos = {};      // remember scroll position per standard key
 let listScrollToItem = {};  // remember which item code to scroll to per standard
+let listCollapsedState = {}; // remember collapsed state: { std: { catId: true/false } }
+let isSearchMode = false;    // whether currently in search mode
+let detailFromStandard = ''; // which standard view was active before entering detail
 
 
 // ===== DOM REFS =====
@@ -461,7 +464,8 @@ function renderList(items, groupByStd, isSearch) {
     var categories = {};
     var currentStd = items.length > 0 ? items[0].standard : 'isom2017';
     var catMap = currentStd === 'iscd2018' ? ISCD_CATEGORY_MAP : CATEGORY_MAP;
-    
+    var savedState = listCollapsedState[currentStd] || {};
+
     for (var i = 0; i < items.length; i++) {
       var code = getCode(items[i]) || '';
       var cat = getCategory(code, items[i].standard);
@@ -474,17 +478,20 @@ function renderList(items, groupByStd, isSearch) {
       var catId = catKeys[j];
       var catName = catMap[catId] || '其他';
       var catItems = categories[catId];
-      html += '<div class="group-header collapsed" data-cat="' + catId + '">';
+      // 默认折叠，除非用户手动展开过
+      var isCollapsed = savedState[catId] !== undefined ? savedState[catId] : true;
+      var collapsedCls = isCollapsed ? ' collapsed' : '';
+      html += '<div class="group-header' + collapsedCls + '" data-cat="' + catId + '">';
       html += '<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
       html += '<span>' + catName + ' <small style="opacity:.65;font-size:.68rem">· ' + catItems.length + ' 项</small></span>';
       html += '</div>';
-      html += '<div class="group-items collapsed" data-cat="' + catId + '">';
+      html += '<div class="group-items' + collapsedCls + '" data-cat="' + catId + '">';
       html += catItems.map(renderCard).join('');
       html += '</div>';
     }
     $listWrap.innerHTML = html;
   } else if (isSearch) {
-    // 搜索结果：按标准分组，每个标准内再按分类分组（默认展开）
+    // 搜索结果：按标准分组，每个标准内再按分类分组
     var groups = {};
     for (var i = 0; i < items.length; i++) {
       if (!groups[items[i].standard]) groups[items[i].standard] = [];
@@ -492,15 +499,19 @@ function renderList(items, groupByStd, isSearch) {
     }
     var html = '';
     var stdOrder = ['issprom2019', 'isom2017', 'iscd2018'];
+    var searchState = listCollapsedState['search'] || {};
     for (var s = 0; s < stdOrder.length; s++) {
       var std = stdOrder[s];
       if (!groups[std] || groups[std].length === 0) continue;
       var stdItems = groups[std];
-      html += '<div class="group-header" data-std-group="' + std + '">';
+      // 搜索结果默认展开，除非用户手动折叠过
+      var isStdCollapsed = searchState[std] !== undefined ? searchState[std] : false;
+      var stdCollapsedCls = isStdCollapsed ? ' collapsed' : '';
+      html += '<div class="group-header' + stdCollapsedCls + '" data-std-group="' + std + '">';
       html += '<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
       html += '<span>' + STD_LABELS[std] + ' <small style="opacity:.65;font-size:.68rem">· ' + stdItems.length + ' 个结果</small></span>';
       html += '</div>';
-      html += '<div class="group-items" data-std-group="' + std + '">';
+      html += '<div class="group-items' + stdCollapsedCls + '" data-std-group="' + std + '">';
       // 按分类分组
       var catMap = std === 'iscd2018' ? ISCD_CATEGORY_MAP : CATEGORY_MAP;
       var categories = {};
@@ -515,11 +526,14 @@ function renderList(items, groupByStd, isSearch) {
         var catId = catKeys[c];
         var catName = catMap[catId] || '其他';
         var catItems = categories[catId];
-        html += '<div class="group-header" data-cat="' + catId + '" style="padding-left:20px">';
+        // 搜索结果内层分类默认展开
+        var isCatCollapsed = searchState[std + '_' + catId] !== undefined ? searchState[std + '_' + catId] : false;
+        var catCollapsedCls = isCatCollapsed ? ' collapsed' : '';
+        html += '<div class="group-header' + catCollapsedCls + '" data-cat="' + catId + '" style="padding-left:20px">';
         html += '<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
         html += '<span>' + catName + ' <small style="opacity:.65;font-size:.68rem">· ' + catItems.length + ' 项</small></span>';
         html += '</div>';
-        html += '<div class="group-items" data-cat="' + catId + '">';
+        html += '<div class="group-items' + catCollapsedCls + '" data-cat="' + catId + '">';
         html += catItems.map(renderCard).join('');
         html += '</div>';
       }
@@ -527,7 +541,7 @@ function renderList(items, groupByStd, isSearch) {
     }
     $listWrap.innerHTML = html;
   } else {
-    // "全部"视图：按标准分组，ISSprOM 默认展开，其他折叠
+    // "全部"视图：按标准分组
     var groups = {};
     for (var i = 0; i < items.length; i++) {
       if (!groups[items[i].standard]) groups[items[i].standard] = [];
@@ -535,11 +549,13 @@ function renderList(items, groupByStd, isSearch) {
     }
     var html = '';
     var stdOrder = ['issprom2019', 'isom2017', 'iscd2018'];
+    var allState = listCollapsedState['all'] || {};
     for (var s = 0; s < stdOrder.length; s++) {
       var std = stdOrder[s];
       if (!groups[std] || groups[std].length === 0) continue;
       var stdItems = groups[std];
-      var isCollapsed = std !== 'issprom2019';
+      // 默认 ISSprOM 展开，其他折叠，除非用户手动切换过
+      var isCollapsed = allState[std] !== undefined ? allState[std] : (std !== 'issprom2019');
       var collapsedCls = isCollapsed ? ' collapsed' : '';
       html += '<div class="group-header' + collapsedCls + '" data-std-group="' + std + '">';
       html += '<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
@@ -557,6 +573,7 @@ function renderList(items, groupByStd, isSearch) {
 
 // ===== SHOW STANDARD =====
 function showStandard(std, skipHash) {
+  isSearchMode = false;
   // If on detail page and switching to a tab, replaceState to skip detail entry
   // The old tab entry in history is cleaned up by handleRoute's stale-tab detection
   if (!skipHash && $detailPage.classList.contains('show') && std !== 'all') {
@@ -635,9 +652,11 @@ function showStandard(std, skipHash) {
 function searchAll(query) {
   var q = query.toLowerCase().trim();
   if (!q) {
+    isSearchMode = false;
     showStandard(currentStandard, true);
     return;
   }
+  isSearchMode = true;
   // Switch to "all" tab visual
   $tabBar.querySelectorAll('.tab').forEach(function(t) {
     t.classList.toggle('active', t.dataset.std === 'all');
@@ -670,6 +689,8 @@ function showListPage() {
 function openDetail(std, code) {
   // Save list scroll position before navigating to detail
   listScrollPos[currentStandard] = window.scrollY;
+  // Remember which standard view we came from
+  detailFromStandard = currentStandard;
   var list = DATA_BY_STD[std];
   currentDetailIndex = -1;
   for (var i = 0; i < list.length; i++) {
@@ -807,7 +828,19 @@ function navigateDetail(direction) {
   var item = currentDetailList[currentDetailIndex];
   var nid = getCode(item);
   // Track which item to scroll to when returning to list
-  listScrollToItem[item.standard] = nid;
+  // Use detailFromStandard to match the view we'll return to (e.g. 'all' for "全部" view)
+  var stateKey = detailFromStandard || item.standard;
+  listScrollToItem[stateKey] = nid;
+  // Auto-expand the group containing this item
+  if (!listCollapsedState[stateKey]) listCollapsedState[stateKey] = {};
+  if (stateKey === 'all') {
+    // "全部"视图：展开对应的标准分组
+    listCollapsedState[stateKey][item.standard] = false;
+  } else {
+    // 单标准视图：展开对应的分类
+    var cat = getCategory(nid, item.standard);
+    listCollapsedState[stateKey][cat] = false; // false = not collapsed = expanded
+  }
   // Use replaceState to avoid cluttering browser history on prev/next navigation
   history.replaceState('', document.title, window.location.pathname + window.location.search + '#detail/' + item.standard + '/' + encodeURIComponent(nid));
   renderDetail();
@@ -852,10 +885,35 @@ $listWrap.addEventListener('click', function(e) {
   if (header) {
     if (header.dataset.cat) {
       var items = $listWrap.querySelector('.group-items[data-cat="' + header.dataset.cat + '"]');
-      if (items) { header.classList.toggle('collapsed'); items.classList.toggle('collapsed'); }
+      if (items) {
+        header.classList.toggle('collapsed');
+        items.classList.toggle('collapsed');
+        // 保存折叠状态
+        var stateKey = currentStandard;
+        // 搜索结果内层分类：需要找到父级 std-group
+        if (isSearchMode) {
+          stateKey = 'search';
+          var parentGroup = header.closest('.group-items[data-std-group]');
+          if (parentGroup) {
+            var catKey = parentGroup.dataset.stdGroup + '_' + header.dataset.cat;
+            if (!listCollapsedState[stateKey]) listCollapsedState[stateKey] = {};
+            listCollapsedState[stateKey][catKey] = header.classList.contains('collapsed');
+            return;
+          }
+        }
+        if (!listCollapsedState[stateKey]) listCollapsedState[stateKey] = {};
+        listCollapsedState[stateKey][header.dataset.cat] = header.classList.contains('collapsed');
+      }
     } else if (header.dataset.stdGroup) {
       var items = $listWrap.querySelector('.group-items[data-std-group="' + header.dataset.stdGroup + '"]');
-      if (items) { header.classList.toggle('collapsed'); items.classList.toggle('collapsed'); }
+      if (items) {
+        header.classList.toggle('collapsed');
+        items.classList.toggle('collapsed');
+        // 保存折叠状态
+        var stateKey = currentStandard === 'all' ? 'all' : (isSearchMode ? 'search' : currentStandard);
+        if (!listCollapsedState[stateKey]) listCollapsedState[stateKey] = {};
+        listCollapsedState[stateKey][header.dataset.stdGroup] = header.classList.contains('collapsed');
+      }
     }
   }
 });
