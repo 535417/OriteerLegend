@@ -586,6 +586,8 @@ function showStandard(std, skipHash) {
     listScrollPos[prevStandard] = window.scrollY;
   }
   currentStandard = std;
+  // Show list page first, then render to ensure scroll position can be restored
+  showListPage();
   if (std === 'all') {
     renderList(ALL_DATA, true);
   } else {
