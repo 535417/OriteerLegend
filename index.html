@@ -211,6 +211,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 /* Detail image click hint */
 .detail-img-wrap{cursor:pointer}
 .detail-img-wrap:active{opacity:.8}
+
+/* Footer */
+.footer{background:#f8f9fa;border-top:1px solid #e9ecef;padding:24px 16px;margin-top:40px;font-size:13px;color:#6c757d;line-height:1.6}
+.footer a{color:#2d6a4f;text-decoration:none}
+.footer a:hover{text-decoration:underline}
+.footer .disclaimer{max-width:800px;margin:0 auto;text-align:center}
+.footer .disclaimer p{margin:8px 0}
+.footer .disclaimer .copyright{font-size:12px;margin-top:12px;color:#adb5bd}
 </style>
 </head>
 <body>
@@ -1160,5 +1168,16 @@ $scrollTopBtn.addEventListener('click', function() {
 });
 
 </script>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="disclaimer">
+    <p>本网站部分内容（包括符号说明、图例资料及相关技术信息）基于 <a href="https://omapwiki.orienteering.sport" target="_blank" rel="noopener">O-Map Wiki</a> 整理、翻译和改编。</p>
+    <p>原始内容版权归 O-Map Wiki 贡献者所有，依据 <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">Creative Commons Attribution-ShareAlike 4.0 International（CC BY-SA 4.0）</a> 许可协议发布。</p>
+    <p>本网站与 International Orienteering Federation（IOF）及 O-Map Wiki 无官方关联，也不代表其官方立场。</p>
+    <p>如发现版权、翻译或内容问题，请联系网站管理员处理。</p>
+    <p class="copyright">© 2026 OriteerLegend</p>
+  </div>
+</footer>
 </body>
 </html>
