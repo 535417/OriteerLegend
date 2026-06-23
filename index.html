@@ -53,6 +53,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
   .scroll-top-btn{background:rgba(63,185,80,.65)}
   .card:active{background:rgba(45,106,79,.3)!important}
   .img-overlay{background:rgba(0,0,0,.95)}
+  .footer{background:rgba(22,27,34,.95)!important;border-color:rgba(240,246,240,.08)!important}
+  .footer p{color:#8b949e!important}
+  .footer a{color:#3fb950!important}
+  .footer .copyright{color:#6e7681!important}
+  .about-link{color:#8b949e!important}
 }
 /* ===== Reduced Motion ===== */
 @media (prefers-reduced-motion:reduce){
@@ -219,6 +224,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 .footer .disclaimer{max-width:800px;margin:0 auto;text-align:center}
 .footer .disclaimer p{margin:8px 0}
 .footer .disclaimer .copyright{font-size:12px;margin-top:12px;color:#adb5bd}
+.about-link{display:inline-block;margin-top:8px;font-size:.75rem;color:#6c757d;text-decoration:none;opacity:.7;transition:opacity .2s}
+.about-link:hover{opacity:1;text-decoration:underline}
 </style>
 </head>
 <body>
@@ -227,6 +234,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 <div class="header">
   <h1>🗺️ 定向地图图例库</h1>
   <div class="subtitle">Orienteering Map Legend Reference</div>
+  <a href="#footer" class="about-link" onclick="document.getElementById('siteFooter').scrollIntoView({behavior:'smooth'})">关于本站</a>
   <div class="search-wrap">
     <div class="search-wrap-inner">
       <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -1170,7 +1178,7 @@ $scrollTopBtn.addEventListener('click', function() {
 </script>
 
 <!-- ===== FOOTER ===== -->
-<footer class="footer">
+<footer class="footer" id="siteFooter">
   <div class="disclaimer">
     <p>本网站部分内容（包括符号说明、图例资料及相关技术信息）基于 <a href="https://omapwiki.orienteering.sport" target="_blank" rel="noopener">O-Map Wiki</a> 整理、翻译和改编。</p>
     <p>原始内容版权归 O-Map Wiki 贡献者所有，依据 <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">Creative Commons Attribution-ShareAlike 4.0 International（CC BY-SA 4.0）</a> 许可协议发布。</p>
