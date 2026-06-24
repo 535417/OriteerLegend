@@ -1204,13 +1204,6 @@ $scrollTopBtn.addEventListener('click', function() {
 
 // ===== ABOUT MODAL =====
 var $disclaimerModal = document.getElementById('disclaimerModal');
-// 使用事件委托，因为 #aboutLink 在 <script> 之后才渲染
-document.addEventListener('click', function(e) {
-  if (e.target.id === 'aboutLink' || (e.target.closest && e.target.closest('#aboutLink'))) {
-    e.preventDefault();
-    $disclaimerModal.classList.add('show');
-  }
-});
 document.getElementById('disclaimerClose').addEventListener('click', function() {
   $disclaimerModal.classList.remove('show');
 });
@@ -1233,5 +1226,12 @@ document.addEventListener('keydown', function(e) {
     <p class="copyright">© 2026 OriteerLegend</p>
   </div>
 </footer>
+<!-- #aboutLink 在 <script> 之后渲染，需单独绑定 -->
+<script>
+document.getElementById('aboutLink').addEventListener('click', function(e) {
+  e.preventDefault();
+  document.getElementById('disclaimerModal').classList.add('show');
+});
+</script>
 </body>
 </html>
