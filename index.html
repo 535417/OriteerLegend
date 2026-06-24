@@ -1204,9 +1204,12 @@ $scrollTopBtn.addEventListener('click', function() {
 
 // ===== ABOUT MODAL =====
 var $disclaimerModal = document.getElementById('disclaimerModal');
-document.getElementById('aboutLink').addEventListener('click', function(e) {
-  e.preventDefault();
-  $disclaimerModal.classList.add('show');
+// 使用事件委托，因为 #aboutLink 在 <script> 之后才渲染
+document.addEventListener('click', function(e) {
+  if (e.target.id === 'aboutLink' || (e.target.closest && e.target.closest('#aboutLink'))) {
+    e.preventDefault();
+    $disclaimerModal.classList.add('show');
+  }
 });
 document.getElementById('disclaimerClose').addEventListener('click', function() {
   $disclaimerModal.classList.remove('show');
