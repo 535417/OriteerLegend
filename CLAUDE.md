@@ -76,3 +76,42 @@ images/
 - ISCD 字段名与其他两套不同（`id` vs `code`，`image` vs `icon`，`name_zh` vs `name`）
 - 描述文本含未转义的双引号和中文标点，不可用 JSON.parse，只能用 eval
 - SVG 图标尺寸不一（有的 mm 有的 px），且含大量留白，需 CSS 放大
+
+## ⚠️ 关于本站弹窗（关键 DOM 顺序陷阱）
+
+### 现状
+- 入口：页脚链接 `#aboutLink`，文案"关于本站 →"
+- 弹窗：`#disclaimerModal`（`modal-overlay` 容器），标题"关于本站"
+- 内容：完整的版权/免责声明/来源说明
+- 关闭方式：✕ 按钮 / 遮罩点击 / Escape 键（三通道）
+
+### 关键：`<script>` 与 `<footer>` 的 DOM 渲染顺序
+```
+<body>
+  ...header, list page, detail page, modal overlay...  ← 在 <script> 之前
+  <script>...</script>  ← 主脚本在此执行
+  <footer>...</footer>  ← 在 <script> 之后！DOM 尚不存在
+</body>
+```
+
+**陷阱**：`#aboutLink` 在 `<script>` **之后**才渲染，主脚本中 `getElementById('aboutLink')` 返回 `null`。
+
+### 解决方案：双 script 块
+- 主 `<script>`（~900 行）：所有核心逻辑、路由、列表渲染。可引用 `<script>` 之前的 DOM（modal overlay、header、列表页等）
+- 页脚后小 `<script>`（6 行）：仅绑定 `#aboutLink` 点击事件。此时 DOM 已就绪
+
+```html
+</footer>
+<script>
+document.getElementById('aboutLink').addEventListener('click', function(e) {
+  e.preventDefault();
+  document.getElementById('disclaimerModal').classList.add('show');
+});
+</script>
+</body>
+```
+
+### 禁止的做法
+- ❌ 在主 script 中用 `getElementById('aboutLink')` — 元素尚不存在
+- ❌ 用 `document` 事件委托 + `e.target.closest()` — 桌面端兼容性问题
+- ❌ 把整个 `<script>` 移到 `</body>` 之前直接解决 — 会影响其他逻辑的初始化时机
