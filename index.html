@@ -643,9 +643,9 @@ function showStandard(std, skipHash) {
     listScrollPos[prevStandard] = window.scrollY;
   }
   currentStandard = std;
-  // 更新标准用途说明
+  // 更新标准用途说明（"全部"不显示）
   if (std === 'all') {
-    $stdDesc.textContent = 'ISOM（长距离） · ISSprOM（短距离） · ISCD（检查点说明表）';
+    $stdDesc.textContent = '';
   } else {
     $stdDesc.textContent = STD_DESC[std] || '';
   }
@@ -727,7 +727,7 @@ function searchAll(query) {
     t.classList.toggle('active', t.dataset.std === 'all');
   });
   currentStandard = 'all';
-  $stdDesc.textContent = 'ISOM（长距离） · ISSprOM（短距离） · ISCD（检查点说明表）';
+  $stdDesc.textContent = '';
 
   var results = { isom2017: [], issprom2019: [], iscd2018: [] };
   for (var i = 0; i < ALL_DATA.length; i++) {
