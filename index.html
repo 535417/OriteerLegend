@@ -63,6 +63,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
   .modal-box a{color:#3fb950!important}
   .modal-close{background:rgba(255,255,255,.08)!important;color:#8b949e!important}
   .modal-close:hover{background:rgba(255,255,255,.15)!important}
+  .std-desc{color:#8b949e!important;background:rgba(255,255,255,.03)!important}
 }
 /* ===== Reduced Motion ===== */
 @media (prefers-reduced-motion:reduce){
@@ -88,6 +89,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 .tab:hover{background:rgba(45,106,79,.08);color:#2D6A4F}
 .tab.active{background:rgba(45,106,79,.12);color:#2D6A4F;border-color:rgba(45,106,79,.3);font-weight:600}
 .tab .count{font-size:.7rem;opacity:.65;margin-left:4px}
+
+/* ===== Standard Description ===== */
+.std-desc{text-align:center;padding:6px 16px 8px;font-size:.78rem;color:#6b8a7a;background:rgba(45,106,79,.04);transition:color .3s}
 
 /* ===== Card List ===== */
 .list-wrap{padding:0 12px 80px;max-width:900px;margin:0 auto}
@@ -263,6 +267,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
   </div>
 </div>
 
+<div class="std-desc" id="stdDesc"></div>
+
 <!-- ===== LIST PAGE ===== -->
 <div class="list-page" id="listPage">
   <div class="list-wrap" id="listWrap"></div>
@@ -354,6 +360,13 @@ const STD_LABELS = {
   isom2017: 'ISOM 2017-2',
   issprom2019: 'ISSprOM 2019-2',
   iscd2018: 'ISCD 2018'
+};
+
+// 标准用途说明（显示在列表上方及组标题）
+const STD_DESC = {
+  isom2017: '通常用于长距离',
+  issprom2019: '通常用于短距离',
+  iscd2018: '检查点说明表'
 };
 
 const STD_ICON_DIR = {
@@ -454,6 +467,7 @@ const $navCount = document.getElementById('navCount');
 const $prevLabel = document.getElementById('prevLabel');
 const $nextLabel = document.getElementById('nextLabel');
 const $toast = document.getElementById('toast');
+const $stdDesc = document.getElementById('stdDesc');
 const $imgOverlay = document.getElementById('imgOverlay');
 const $overlayImg = document.getElementById('overlayImg');
 const $searchClear = document.getElementById('searchClear');
@@ -552,7 +566,7 @@ function renderList(items, groupByStd, isSearch) {
       var stdCollapsedCls = isStdCollapsed ? ' collapsed' : '';
       html += '<div class="group-header' + stdCollapsedCls + '" data-std-group="' + std + '">';
       html += '<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
-      html += '<span>' + STD_LABELS[std] + ' <small style="opacity:.65;font-size:.68rem">· ' + stdItems.length + ' 个结果</small></span>';
+      html += '<span>' + STD_LABELS[std] + ' <small style="opacity:.65;font-size:.68rem">· ' + stdItems.length + ' 个结果 · ' + (STD_DESC[std] || '') + '</small></span>';
       html += '</div>';
       html += '<div class="group-items' + stdCollapsedCls + '" data-std-group="' + std + '">';
       // 按分类分组
@@ -602,7 +616,7 @@ function renderList(items, groupByStd, isSearch) {
       var collapsedCls = isCollapsed ? ' collapsed' : '';
       html += '<div class="group-header' + collapsedCls + '" data-std-group="' + std + '">';
       html += '<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
-      html += '<span>' + STD_LABELS[std] + ' <small style="opacity:.65;font-size:.68rem">· ' + stdItems.length + ' 个结果</small></span>';
+      html += '<span>' + STD_LABELS[std] + ' <small style="opacity:.65;font-size:.68rem">· ' + stdItems.length + ' 个结果 · ' + (STD_DESC[std] || '') + '</small></span>';
       html += '</div>';
       html += '<div class="group-items' + collapsedCls + '" data-std-group="' + std + '">';
       html += stdItems.map(renderCard).join('');
@@ -629,6 +643,12 @@ function showStandard(std, skipHash) {
     listScrollPos[prevStandard] = window.scrollY;
   }
   currentStandard = std;
+  // 更新标准用途说明
+  if (std === 'all') {
+    $stdDesc.textContent = 'ISOM（长距离） · ISSprOM（短距离） · ISCD（检查点说明表）';
+  } else {
+    $stdDesc.textContent = STD_DESC[std] || '';
+  }
   // Show list page first, then render to ensure scroll position can be restored
   showListPage();
   if (std === 'all') {
@@ -707,6 +727,7 @@ function searchAll(query) {
     t.classList.toggle('active', t.dataset.std === 'all');
   });
   currentStandard = 'all';
+  $stdDesc.textContent = 'ISOM（长距离） · ISSprOM（短距离） · ISCD（检查点说明表）';
 
   var results = { isom2017: [], issprom2019: [], iscd2018: [] };
   for (var i = 0; i < ALL_DATA.length; i++) {
