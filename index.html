@@ -57,7 +57,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
   .footer p{color:#8b949e!important}
   .footer a{color:#3fb950!important}
   .footer .copyright{color:#6e7681!important}
-  .about-link{color:#8b949e!important}
+  .modal-box{background:#161b22!important}
+  .modal-box h2{color:#3fb950!important;border-color:rgba(240,246,240,.08)!important}
+  .modal-box p{color:#c9d1d9!important}
+  .modal-box a{color:#3fb950!important}
+  .modal-close{background:rgba(255,255,255,.08)!important;color:#8b949e!important}
+  .modal-close:hover{background:rgba(255,255,255,.15)!important}
 }
 /* ===== Reduced Motion ===== */
 @media (prefers-reduced-motion:reduce){
@@ -224,8 +229,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 .footer .disclaimer{max-width:800px;margin:0 auto;text-align:center}
 .footer .disclaimer p{margin:8px 0}
 .footer .disclaimer .copyright{font-size:12px;margin-top:12px;color:#adb5bd}
-.about-link{display:inline-block;margin-top:8px;font-size:.75rem;color:#6c757d;text-decoration:none;opacity:.7;transition:opacity .2s}
-.about-link:hover{opacity:1;text-decoration:underline}
+/* Disclaimer Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;padding:16px}
+.modal-overlay.show{opacity:1;pointer-events:auto}
+.modal-box{position:relative;background:#fff;border-radius:16px;max-width:680px;width:100%;max-height:80vh;overflow-y:auto;padding:28px 24px 24px;box-shadow:0 12px 40px rgba(0,0,0,.18);transform:translateY(20px);transition:transform .25s}
+.modal-overlay.show .modal-box{transform:translateY(0)}
+.modal-close{position:absolute;top:12px;right:14px;width:36px;height:36px;border-radius:50%;border:none;background:rgba(0,0,0,.06);color:#666;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.modal-close:hover{background:rgba(0,0,0,.12)}
+.modal-box h2{font-size:1.1rem;color:#2d6a4f;margin:0 0 16px;padding-bottom:10px;border-bottom:1px solid #e9ecef}
+.modal-box p{font-size:.85rem;line-height:1.8;color:#495057;margin:10px 0}
+.modal-box a{color:#2d6a4f;text-decoration:none}
+.modal-box a:hover{text-decoration:underline}
 </style>
 </head>
 <body>
@@ -234,7 +248,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 <div class="header">
   <h1>🗺️ 定向地图图例库</h1>
   <div class="subtitle">Orienteering Map Legend Reference</div>
-  <a href="#footer" class="about-link" onclick="document.getElementById('siteFooter').scrollIntoView({behavior:'smooth'})">关于本站</a>
   <div class="search-wrap">
     <div class="search-wrap-inner">
       <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -289,6 +302,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
         <span style="font-size:1.1rem">▶</span>
       </button>
     </div>
+  </div>
+</div>
+
+<!-- ===== DISCLAIMER MODAL ===== -->
+<div class="modal-overlay" id="disclaimerModal">
+  <div class="modal-box">
+    <button class="modal-close" id="disclaimerClose" aria-label="关闭">✕</button>
+    <h2>版权与免责声明</h2>
+    <p>本网站为非官方中文定向制图资料索引网站，旨在促进定向运动地图规范的学习、交流与研究。</p>
+    <p>部分内容来源于 <a href="https://omapwiki.orienteering.sport" target="_blank" rel="noopener">O-Map Wiki</a>，包括但不限于地图符号定义、规范说明、图例示意及相关技术资料。原始内容版权归其各自作者及贡献者所有。</p>
+    <p>依据 O-Map Wiki 公开声明，其内容采用 Creative Commons Attribution-ShareAlike 4.0 International（CC BY-SA 4.0）许可协议发布。本网站对相关内容进行了翻译、整理、格式转换和适当改编，并按照相同许可协议进行共享。</p>
+    <p>本网站与 International Orienteering Federation（IOF）、O-Map Wiki 及其关联组织不存在任何官方关系，不代表其观点、政策或立场。</p>
+    <p>尽管本站尽力保证翻译与整理内容的准确性，但不保证所有信息完全无误。对于因使用本站内容而产生的任何直接或间接损失，本站不承担责任。</p>
+    <p>如您认为本站内容涉及版权、署名或其他权益问题，请与网站管理员 <a href="mailto:evcgxi79373q@hotmail.com">evcgxi79373q@hotmail.com</a> 联系，我们将在核实后及时处理。</p>
   </div>
 </div>
 
@@ -1175,15 +1202,27 @@ $scrollTopBtn.addEventListener('click', function() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
+// ===== DISCLAIMER MODAL =====
+var $disclaimerModal = document.getElementById('disclaimerModal');
+document.getElementById('disclaimerClose').addEventListener('click', function() {
+  $disclaimerModal.classList.remove('show');
+});
+$disclaimerModal.addEventListener('click', function(e) {
+  if (e.target === $disclaimerModal) $disclaimerModal.classList.remove('show');
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && $disclaimerModal.classList.contains('show')) {
+    $disclaimerModal.classList.remove('show');
+  }
+});
+
 </script>
 
 <!-- ===== FOOTER ===== -->
 <footer class="footer" id="siteFooter">
   <div class="disclaimer">
-    <p>本网站部分内容（包括符号说明、图例资料及相关技术信息）基于 <a href="https://omapwiki.orienteering.sport" target="_blank" rel="noopener">O-Map Wiki</a> 整理、翻译和改编。</p>
-    <p>原始内容版权归 O-Map Wiki 贡献者所有，依据 <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">Creative Commons Attribution-ShareAlike 4.0 International（CC BY-SA 4.0）</a> 许可协议发布。</p>
-    <p>本网站与 International Orienteering Federation（IOF）及 O-Map Wiki 无官方关联，也不代表其官方立场。</p>
-    <p>如发现版权、翻译或内容问题，请联系网站管理员处理。</p>
+    <p>部分内容基于 <a href="https://omapwiki.orienteering.sport" target="_blank" rel="noopener">O-Map Wiki</a> 整理翻译，遵循 <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a> 协议。</p>
+    <p><a href="javascript:void(0)" onclick="document.getElementById('disclaimerModal').classList.add('show')">查看完整版权与免责声明 →</a></p>
     <p class="copyright">© 2026 OriteerLegend</p>
   </div>
 </footer>
