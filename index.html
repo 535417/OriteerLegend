@@ -305,11 +305,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
   </div>
 </div>
 
-<!-- ===== DISCLAIMER MODAL ===== -->
+<!-- ===== ABOUT MODAL ===== -->
 <div class="modal-overlay" id="disclaimerModal">
   <div class="modal-box">
     <button class="modal-close" id="disclaimerClose" aria-label="关闭">✕</button>
-    <h2>版权与免责声明</h2>
+    <h2>关于本站</h2>
     <p>本网站为非官方中文定向制图资料索引网站，旨在促进定向运动地图规范的学习、交流与研究。</p>
     <p>部分内容来源于 <a href="https://omapwiki.orienteering.sport" target="_blank" rel="noopener">O-Map Wiki</a>，包括但不限于地图符号定义、规范说明、图例示意及相关技术资料。原始内容版权归其各自作者及贡献者所有。</p>
     <p>依据 O-Map Wiki 公开声明，其内容采用 Creative Commons Attribution-ShareAlike 4.0 International（CC BY-SA 4.0）许可协议发布。本网站对相关内容进行了翻译、整理、格式转换和适当改编，并按照相同许可协议进行共享。</p>
@@ -1202,8 +1202,12 @@ $scrollTopBtn.addEventListener('click', function() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-// ===== DISCLAIMER MODAL =====
+// ===== ABOUT MODAL =====
 var $disclaimerModal = document.getElementById('disclaimerModal');
+document.getElementById('aboutLink').addEventListener('click', function(e) {
+  e.preventDefault();
+  $disclaimerModal.classList.add('show');
+});
 document.getElementById('disclaimerClose').addEventListener('click', function() {
   $disclaimerModal.classList.remove('show');
 });
@@ -1222,7 +1226,7 @@ document.addEventListener('keydown', function(e) {
 <footer class="footer" id="siteFooter">
   <div class="disclaimer">
     <p>部分内容基于 <a href="https://omapwiki.orienteering.sport" target="_blank" rel="noopener">O-Map Wiki</a> 整理翻译，遵循 <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a> 协议。</p>
-    <p><a href="javascript:void(0)" onclick="document.getElementById('disclaimerModal').classList.add('show')">查看完整版权与免责声明 →</a></p>
+    <p><a href="javascript:void(0)" id="aboutLink">关于本站 →</a></p>
     <p class="copyright">© 2026 OriteerLegend</p>
   </div>
 </footer>
