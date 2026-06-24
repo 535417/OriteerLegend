@@ -566,7 +566,7 @@ function renderList(items, groupByStd, isSearch) {
       var stdCollapsedCls = isStdCollapsed ? ' collapsed' : '';
       html += '<div class="group-header' + stdCollapsedCls + '" data-std-group="' + std + '">';
       html += '<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
-      html += '<span>' + STD_LABELS[std] + ' <small style="opacity:.65;font-size:.68rem">· ' + stdItems.length + ' 个结果 · ' + (STD_DESC[std] || '') + '</small></span>';
+      html += '<span>' + STD_LABELS[std] + ' <small style="opacity:.65;font-size:.68rem">· ' + stdItems.length + ' 个结果（' + (STD_DESC[std] || '') + '）</small></span>';
       html += '</div>';
       html += '<div class="group-items' + stdCollapsedCls + '" data-std-group="' + std + '">';
       // 按分类分组
@@ -616,7 +616,7 @@ function renderList(items, groupByStd, isSearch) {
       var collapsedCls = isCollapsed ? ' collapsed' : '';
       html += '<div class="group-header' + collapsedCls + '" data-std-group="' + std + '">';
       html += '<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
-      html += '<span>' + STD_LABELS[std] + ' <small style="opacity:.65;font-size:.68rem">· ' + stdItems.length + ' 个结果 · ' + (STD_DESC[std] || '') + '</small></span>';
+      html += '<span>' + STD_LABELS[std] + ' <small style="opacity:.65;font-size:.68rem">· ' + stdItems.length + ' 个结果（' + (STD_DESC[std] || '') + '）</small></span>';
       html += '</div>';
       html += '<div class="group-items' + collapsedCls + '" data-std-group="' + std + '">';
       html += stdItems.map(renderCard).join('');
