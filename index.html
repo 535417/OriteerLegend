@@ -45,10 +45,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
   .detail-nav .nav-arrow{color:#c3e3ca!important}
   .detail-code{color:#9ed0a9!important}
   .detail-name{color:#e1eadf!important}
+  .field-reference-jump{background:#263b2c!important;border-color:#45624b!important;color:#c1e4c8!important}
   .detail-img-wrap{background:#1d2a21!important;border-color:#344b3a!important}
   .detail-img-wrap.is-loading::after,.detail-img-wrap.is-error::after{color:#a9bdad!important}
   .desc-card{background:#1d2a21!important;border-color:#344b3a!important}
   .desc-card p{color:#d1dfd4!important}
+  .field-reference{background:#1d2a21!important;border-color:#344b3a!important}
+  .field-reference-heading h3{color:#bfe2c6!important}
+  .field-reference-count{background:#2f4936!important;color:#c0dbc7!important}
+  .field-reference-intro,.field-reference-source{color:#b4c6b7!important}
+  .field-reference-card{background:#223227!important;border-color:#3a5440!important}
+  .field-reference-card figcaption{color:#e1eadf!important}
+  .field-reference-card figcaption small{color:#a9bdad!important}
+  .field-reference-source{border-color:#344b3a!important}
+  .card .field-ref-badge{background:#2f4936!important;color:#c0dbc7!important}
   .bottom-nav{background:rgba(24,35,27,.96)!important;border-color:#344b3a!important}
   .bottom-nav .nav-btn{background:#223227!important;border-color:#3a5440!important;color:#d7ecd9!important}
   .bottom-nav .nav-btn:hover{background:#2d4935!important;border-color:#6c9d78!important}
@@ -116,6 +126,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 
 /* ===== Card List ===== */
 .list-wrap{padding:8px 12px 80px;max-width:1200px;margin:0 auto}
+.all-tab-view{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh}
+.all-tab-view #listPage{flex:1 0 auto;min-height:0;padding-bottom:0}
+.all-tab-view #listWrap{padding-bottom:40px}
+.all-tab-view .footer{margin-top:auto}
 .group-header{min-height:44px;margin:5px 0 3px;padding:8px 10px;font-size:.86rem;font-weight:700;color:#3f6d50;display:flex;align-items:center;gap:8px;background:#edf4ee;border:1px solid #dce8df;border-left:2px solid #b8d4c0;border-radius:10px;cursor:pointer;user-select:none;transition:background-color .2s,color .2s,border-color .2s}
 .group-header:hover{background:#e6f0e8;color:#315e42}
 .group-header::after{display:none}
@@ -147,6 +161,7 @@ body.view-list .group-items.card-grid{display:block}
 .card .en-sub{font-size:.72rem;color:#617466;line-height:1.3;margin-top:1px}
 .detail-content .en-sub{color:#617466}
 .card .desc{font-size:.75rem;color:#506557;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card .field-ref-badge{align-self:flex-start;margin-top:3px;padding:3px 8px;border-radius:999px;background:#e9f2eb;color:#477454;font-size:.68rem;font-weight:600;line-height:1.2}
 body.view-list .card{flex-direction:row;height:auto;gap:12px;padding:12px;margin:0 0 5px;border-left:2px solid #bfd8c5}
 body.view-list .card .img-col{flex:0 0 96px;width:96px}
 body.view-list .img-wrap{width:96px;height:72px}
@@ -185,12 +200,31 @@ body.detail-mode .header,body.detail-mode .std-desc{display:none}
 .detail-name{font-size:1.35rem;font-weight:700;color:#23352a;margin-bottom:4px;text-align:center}
 .detail-content #detailEnSub{font-size:.85rem;margin-top:2px;margin-bottom:12px;text-align:center}
 .detail-content #detailEnSub:empty{display:none}
+.field-reference-jump{display:inline-flex;align-items:center;justify-content:center;min-height:42px;margin:0 0 12px;padding:0 14px;border:1px solid #cfe0d2;border-radius:999px;background:#edf5ef;color:#3f704d;font:inherit;font-size:.8rem;font-weight:600;cursor:pointer}
+.field-reference-jump[hidden]{display:none}
 
 /* Description Card */
 .desc-card{width:100%;background:#fcfefd;border:1px solid #e0e9e2;border-radius:16px;padding:20px;margin-bottom:8px}
 .desc-card p{font-size:.9rem;line-height:1.75;color:#3d5143;margin-bottom:12px}
 .desc-card p:last-child{margin-bottom:0}
 .desc-card p strong,.desc-card p b{color:#23352a}
+
+/* Field photo references */
+.field-reference{width:100%;margin:12px 0 8px;padding:16px;background:#f8fbf8;border:1px solid #dfe9e1;border-radius:16px}
+.field-reference[hidden]{display:none}
+.field-reference-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+.field-reference-heading h3{margin:0;color:#2d5940;font-size:1rem}
+.field-reference-count{flex-shrink:0;padding:3px 8px;border-radius:999px;background:#e8f1e9;color:#55725c;font-size:.72rem}
+.field-reference-intro,.field-reference-source{margin:0;color:#637467;font-size:.78rem;line-height:1.55}
+.field-reference-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}
+.field-reference-card{min-width:0;margin:0;overflow:hidden;background:#fff;border:1px solid #e0e9e2;border-radius:12px}
+.field-reference-image-button{position:relative;display:block;width:100%;padding:0;border:0;background:#eef3ef;cursor:zoom-in}
+.field-reference-image-button img{display:block;width:100%;height:clamp(130px,40vw,230px);object-fit:contain}
+.field-reference-zoom{position:absolute;right:7px;bottom:7px;padding:3px 7px;border-radius:999px;background:rgba(23,35,27,.72);color:#fff;font-size:.68rem}
+.field-reference-card figcaption{padding:8px 9px;color:#304538;font-size:.8rem;line-height:1.4}
+.field-reference-card figcaption small{display:block;margin-top:3px;color:#768579;font-size:.68rem}
+.field-reference-source{padding-top:9px;border-top:1px solid #e4ece5}
+@media(max-width:520px){.field-reference{padding:13px}.field-reference-grid{grid-template-columns:1fr;gap:9px}.field-reference-image-button img{height:min(62vw,270px)}}
 
 /* Bottom Nav — fixed to screen bottom */
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:90;display:flex;align-items:center;justify-content:center;gap:10px;padding:6px 12px;padding-bottom:max(6px,env(safe-area-inset-bottom));background:rgba(240,246,243,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid #dfe9e1}
@@ -289,6 +323,7 @@ body.detail-mode .header,body.detail-mode .std-desc{display:none}
 
 /* Footer */
 .footer{background:#eef3ef;border-top:1px solid #dfe9e1;padding:24px 16px;margin-top:40px;font-size:13px;color:#617466;line-height:1.6}
+@media (max-width:640px){.footer{padding:12px 12px calc(12px + env(safe-area-inset-bottom,0px));margin-top:12px}.footer .disclaimer p{margin:4px 0}.footer .disclaimer .copyright{margin-top:6px}}
 .footer a{color:#2d6a4f;text-decoration:none}
 .footer #aboutLink{display:inline-flex;align-items:center;min-height:44px;padding:0 8px}
 .footer a:hover{text-decoration:underline}
@@ -374,7 +409,17 @@ body.detail-mode .header,body.detail-mode .std-desc{display:none}
     <div class="detail-code" id="detailCode"></div>
     <div class="detail-name" id="detailName"></div>
     <div class="en-sub" id="detailEnSub"></div>
+    <button type="button" class="field-reference-jump" id="fieldReferenceJump" hidden>查看实地参考</button>
     <div class="desc-card" id="descCard"></div>
+    <section class="field-reference" id="fieldReference" hidden aria-labelledby="fieldReferenceTitle">
+      <div class="field-reference-heading">
+        <h3 id="fieldReferenceTitle">实地参考</h3>
+        <span class="field-reference-count" id="fieldReferenceCount"></span>
+      </div>
+      <p class="field-reference-intro">查看与该图例对应的实地照片，帮助理解地物特征。</p>
+      <div class="field-reference-grid" id="fieldReferenceGrid"></div>
+      <p class="field-reference-source">图片由华瑞健定向及广大定向运动爱好者、推广机构和俱乐部提供。照片仅供理解参考，具体地物与绘图取舍以现场和适用制图规范为准。</p>
+    </section>
     <div class="bottom-nav">
       <button class="nav-btn" id="bottomPrev">
         <span style="font-size:1.1rem">◀</span>
@@ -417,6 +462,7 @@ body.detail-mode .header,body.detail-mode .std-desc{display:none}
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
+<script src="js/field-references.js"></script>
 <script>
 // ===== DATA =====
 const ISOM_DATA = [{"code":"101","name":"首曲线（基本等高线）","name_en":"Contour","description":"首曲线是地面上高程相等的各相邻点所连成的闭合曲线。示坡线绘制在首曲线较低的一侧用来指示下坡方向，使用时将示坡线放置在山凹处。可用闭合的首曲线绘制小丘或凹地。用首曲线绘制凹地时至少要绘制一条示坡线。相邻首曲线之间的关系非常重要。相邻的首曲线可表示出地貌的形状和结构。首曲线上应该避免出现小细节，以防止其遮盖地貌的主要特征。突出的地貌特征，如凹地，山凹，山凸，土崖和台地可能会被夸大绘制。绝对高程并不那么重要，但相邻特征之间的相对高度应在地图上尽可能准确地绘制出来。","icon":"images/isom2017img/101-Contour.svg","standard":"isom2017"},{"code":"102","name":"计曲线（加粗等高线）","name_en":"Index contour","description":"为快速判读高度差和地貌的整体起伏，每隔四条首曲线必须绘制一条较粗的计曲线。在细节较多的区域可以用首曲线代替。用等高线绘制小丘或凹地时通常不使用计曲线绘制。在平坦地貌中必须仔细选择计曲线的位置。最理想的是选取最能凸显斜坡的重要等高线作为计曲线。计曲线可以绘制等高线注记。等高线注记只能放置在计曲线不遮挡细节的位置。等高线注记顶部方向必须朝向等高线的较高侧。","icon":"images/isom2017img/102-Index-contour.svg","standard":"isom2017"},{"code":"103","name":"间曲线（半距等高线）","name_en":"Form line","description":"若需提供更多有关地面起伏的信息，则使用间曲线绘制。只有在首曲线不能完整描述地貌的情况下才会使用间曲线。间曲线不得用在两等高线的中间插值线位置。相邻等高线之间只能使用一条间曲线。间曲线和等高线体系逻辑上吻合非常重要，因此间曲线的起止处应与相邻等高线平行。间曲线虚线的间断处必须放在合理的直线部分上。间曲线可用于区分土丘或凹地是否扁平或明显。必须避免过度使用间曲线，因为这会干扰地貌的三维图像，并使地图阅读复杂化。","icon":"images/isom2017img/103-Form-line.svg","standard":"isom2017"},{"code":"104","name":"土崖","name_en":"Earth bank","description":"土崖（土坎）是指可与周围环境明显区分出来的地面高度骤变的地貌，例如（砾石坑或沙坑、公路或铁路的路堑或路堤）。土崖可能会影响奔跑速度。齿线的长度表示整个土崖坡面的水平延伸范围。如果两个土崖紧邻，则可以省略齿线。难以翻越的土崖必须使用难以翻越的石崖（201）绘制。","icon":"images/isom2017img/104-Earth-bank.svg","standard":"isom2017"},{"code":"105.1","name":"土垄","name_en":"Earth wall","description":"明显的土垄。","icon":"images/isom2017img/105.1-Earth-wall.svg","standard":"isom2017"},{"code":"105.2","name":"挡土墙","name_en":"Retaining earth wall","description":"由人工修筑形成的较低挡土结构，使地面高度发生明显变化，并能与周围地形清晰区分。常用于表示泥炭地边缘或耕作梯田边缘。若高度超过1米，应使用符号104（土崖/土坎）。","icon":"images/isom2017img/105.2-Retaining-earth-wall.svg","standard":"isom2017"},{"code":"106","name":"残破的土垄","name_en":"Ruined earth wall","description":"残破的或不明显的土垄。","icon":"images/isom2017img/106-Ruined-earth-wall.svg","standard":"isom2017"},{"code":"107","name":"冲沟","name_en":"Erosion gully","description":"用单线绘制因太小而无法用土崖（104）绘制的冲沟。不应剪开冲沟周围的等高线。","icon":"images/isom2017img/107-Erosion-gully.svg","standard":"isom2017"},{"code":"108","name":"小冲沟","name_en":"Small erosion gully","description":"小冲沟，小干沟或小壕沟。建议剪开小冲沟周围的等高线以提高易读性。","icon":"images/isom2017img/108-Small-erosion-gully.svg","standard":"isom2017"},{"code":"109","name":"圆形土堆","name_en":"Small knoll","description":"无法用等高线依比例绘制的明显的圆形土堆、小丘或石质突起。本符号禁止接触或重叠等高线。","icon":"images/isom2017img/109-Small-knoll.svg","standard":"isom2017"},{"code":"110","name":"狭长土堆","name_en":"Small elongated knoll","description":"无法用等高线依比例绘制的明显狭长的土堆、小丘或石质突起，符号长轴方向同实地土堆长轴朝向。本符号禁止接触或重叠等高线。","icon":"images/isom2017img/110-Small-elongated-knoll.svg","standard":"isom2017"},{"code":"111","name":"小凹地","name_en":"Small depression","description":"太小而无法用等高线绘制的没有陡边的小凹地或凹陷。有陡峭边缘的小凹地或凹陷用土坑（112）绘制。该符号不得接触或重叠其他棕色符号。","icon":"images/isom2017img/111-Small-depression.svg","standard":"isom2017"},{"code":"112","name":"土坑","name_en":"Pit","description":"无法用符号土崖(104)依比例绘制的具有明显陡峭边缘的土坑或土洞。没有陡边的坑均用小凹地(111)绘制。该符号不得接触或重叠其他棕色符号。","icon":"images/isom2017img/112-Pit.svg","standard":"isom2017"},{"code":"113","name":"坑洼地面","name_en":"Broken ground","description":"凹坑和/或土堆太复杂而无法详细绘制的地面，或其他类型的坑洼或不平坦的地面，对通行性影响不大但可以清楚地与其他地面区分。最少应绘制3个点。不应剪开坑洼地面上的等高线。不得排列成单点线的式样。","icon":"images/isom2017img/113-Broken-ground.svg","standard":"isom2017"},{"code":"114","name":"非常坑洼的地面","name_en":"Very broken ground","description":"坑和/或丘太复杂而无法详细绘制的地面，或者其他类型的坑洼或不平整的地面，可以清楚地与其他地面区分且影响通行性。最少应绘制3个点。不应被剪开在非常破碎的地面处的等高线。不得排列成单点线的式样。","icon":"images/isom2017img/114-Very-broken-ground.svg","standard":"isom2017"},{"code":"115","name":"突出的特殊地貌","name_en":"Prominent landform feature","description":"该符号所绘制的特征必须与周围环境非常清晰地区分开来。该符号不得与其他棕色符号接触或重叠。必须在地图上给出符号定义。","icon":"images/isom2017img/115-Prominent-landform-feature.svg","standard":"isom2017"},{"code":"201","name":"难以翻越的石崖","name_en":"Impassable cliff","description":"难以翻越、攀爬或有危险的石崖、采石场或非常高且陡峭的难以翻越土崖。对于垂直的岩壁，如果图上位置不足，则可以省略石崖的齿线。基线的末端可以是圆形也可以是平的。两端可使用较短的齿线。当难以翻越的石崖垂直落入水中，运动员无法沿着石崖的下边缘穿越时，可以忽略水岸线，或者齿线必须清晰地延伸到水岸线上。难以翻越的石崖下坡方向应与等高线下坡方向相对应。","icon":"images/isom2017img/201-Impassable-cliff.svg","standard":"isom2017"},{"code":"202","name":"可翻越的石崖","name_en":"Cliff","description":"可翻越的石崖（岩壁）或采石场。如果从等高线上不能明显看出石崖的下坡方向，或为了提高易读性，应在下坡方向绘制短的齿线。对于非垂直的石崖，齿线长度表示石崖坡面的水平延伸范围。如果不绘制齿线，基线的两端必须是圆的。石崖下坡方向应该与等高线下坡方向相对应。翻越石崖一般会降低奔跑速度。","icon":"images/isom2017img/202-Cliff.svg","standard":"isom2017"},{"code":"203.1","name":"岩坑或山洞","name_en":"Rocky pit or cave","description":"可能对运动员构成危险的岩坑、土坑、山洞或矿井。","icon":"images/isom2017img/203.1-Rocky-pit-or-cave.svg","standard":"isom2017"},{"code":"203.2","name":"险坑","name_en":"Dangerous pit","description":"高度危险的坑、垂直竖井或深渊，跌入可能造成严重伤害或死亡。强烈建议不要将此特征物作为检查点。如果该特征位于潜在路线选择区域，应在地面使用标识带警示。（注：非国内常用图例）。","icon":"images/isom2017img/203.2-Dangerous-pit.svg","standard":"isom2017"},{"code":"204","name":"石块","name_en":"Boulder","description":"可以在地面上快速辨识出的突出石块。成群的石块使用符号石群（207）或石块地（208、209）绘制。","icon":"images/isom2017img/204-Boulder.svg","standard":"isom2017"},{"code":"205","name":"大石块","name_en":"Large boulder","description":"特别大而明显的石块。","icon":"images/isom2017img/205-Large-boulder.svg","standard":"isom2017"},{"code":"206","name":"巨石或岩柱","name_en":"Gigantic boulder or rock pillar","description":"必须按平面轮廓形状绘制超大的石块、岩柱或巨大的岩壁。实地中特征物的形状和尺寸可能和插图不同。","icon":"images/isom2017img/206-Gigantic-boulder-or-rock-pillar.svg","standard":"isom2017"},{"code":"207","name":"石群","name_en":"Boulder cluster","description":"众多堆积在一起无法单独绘制的石头。石群必须为一组易于识别的石块群。为了能够显示相邻石群之间大小的显著差异，允许将该符号放大至120%。","icon":"images/isom2017img/207-Boulder-cluster.svg","standard":"isom2017"},{"code":"208","name":"石块地","name_en":"Boulder field","description":"石块地通常不会影响通行性。如果石块地的通行性受到影响，则应使用符号密集的石块地 (209）绘制，或者将它与碎石地符号叠加使用。至少应绘制两个三角形。如果一个三角形与其他岩石符号叠加在一起（例如，符号在石崖（201、202）下侧，与石块（204-206）相邻或与碎石地（210-212）叠加），则可以使用一个三角形。为了能够显示在石块地内高度差异明显的区域，可以将部分三角形放大至120％。(0.96)最大. 2.00.80.8。","icon":"images/isom2017img/208-Boulder-field.svg","standard":"isom2017"},{"code":"209","name":"密集石块地","name_en":"Dense boulder field","description":"随机分布着众多无法单独绘制的石块的区域，并且影响了通行性。为了能够在石块地中突出具有明显高度差的区域，可以将部分三角形放大至120％。","icon":"images/isom2017img/209-Dense-boulder-field.svg","standard":"isom2017"},{"code":"210","name":"慢跑碎石地","name_en":"Stony ground slow running","description":"分布着碎石或小石块的地面，通行性受影响降低至正常速度的60％-80％。插图密度仅供参考，点符号（单点）也可以用来绘制碎石地。最少应绘制3个点。为避免与符号明显的植被界线（416）混淆,不得排列成单点线的式样。","icon":"images/isom2017img/210-Stony-ground-slow-running.svg","standard":"isom2017"},{"code":"211","name":"慢行碎石地","name_en":"Stony ground walk","description":"分布着碎石或小石块的地面，严重影响了通行性（降至正常速度的20-60％）。插图密度仅供参考，也可用点状符号来绘制碎石地。最少应绘制3个点。为避免与符号明显植被界线（416）混淆,不得排列成单点线的式样。","icon":"images/isom2017img/211-Stony-ground-walk.svg","standard":"isom2017"},{"code":"212","name":"难行碎石地","name_en":"Stony ground fight","description":"分布着碎石或小石块的难通行(低于正常速度的20%)地面。插图密度仅供参考，也可以用点状符号来绘制碎石地。最少应绘制3个点。为避免与符号明显的植被界线（416）混淆,不得排列成单点线的式样。","icon":"images/isom2017img/212-Stony-ground-fight.svg","standard":"isom2017"},{"code":"213","name":"空旷的沙地","name_en":"Open sandy ground","description":"具有软沙的空旷地面，其通行性降低至正常奔跑速度的80% 以下。","icon":"images/isom2017img/213-Open-sandy-ground.svg","standard":"isom2017"},{"code":"214","name":"裸岩地","name_en":"Bare rock","description":"没有泥土或植被覆盖的可通行的岩面区域应绘制为裸岩地。覆盖有草、苔藓或其他低矮植被的岩石区域不得使用裸岩地符号绘制。通行性降低的裸岩区域应使用符号碎石地（210-212）绘制。","icon":"images/isom2017img/214-Bare-rock.svg","standard":"isom2017"},{"code":"215","name":"壕沟","name_en":"Trench","description":"天然或人工的壕沟（堑壕）。例如：战壕。难以翻越的壕沟必须使用符号难以翻越的石崖（201）绘制。侧壁坍塌或易于翻越的壕沟应绘制成冲沟。","icon":"images/isom2017img/215-Trench.svg","standard":"isom2017"},{"code":"301","name":"难以穿越的水域","name_en":"Uncrossable body of water","description":"黑色的轮廓线强调该水域是难以穿越的。大面积的水域可以使用70%蓝色绘制，小面积的水域和狭窄部分必须始终用100%蓝色绘制。","icon":"images/isom2017img/301-Uncrossable-body-of-water.svg","standard":"isom2017"},{"code":"302","name":"可穿越的浅水域","name_en":"Shallow body of water","description":"季节性或周期性的浅水域可以用带虚线轮廓的符号绘制。较小的可穿越的浅水域可以用100％蓝色绘制（无轮廓）。","icon":"images/isom2017img/302-Shallow-body-of-water.svg","standard":"isom2017"},{"code":"303","name":"水坑","name_en":"Waterhole","description":"积满水的水坑或因面积太小而无法依比例绘制的水域。","icon":"images/isom2017img/303-Waterhole.svg","standard":"isom2017"},{"code":"304","name":"可穿越的水道","name_en":"Crossable watercourse","description":"可穿越的水道。","icon":"images/isom2017img/304-Crossable-watercourse.svg","standard":"isom2017"},{"code":"305","name":"可穿越的小水道","name_en":"Small crossable watercourse","description":"可穿越的小水道。","icon":"images/isom2017img/305-Small-crossable-watercourse.svg","standard":"isom2017"},{"code":"306","name":"次要/季节性水渠","name_en":"Minor seasonal waterchannel","description":"可能季节性有水的天然或人造的次要水渠。","icon":"images/isom2017img/306-Minor-seasonal-waterchannel.svg","standard":"isom2017"},{"code":"307","name":"难以穿越的沼泽","name_en":"Uncrossable marsh","description":"难以穿越或对运动员可能存在危险的沼泽。黑色轮廓强调该符号是难以穿越的。本符号与难以穿越的水域（301）符号之间的黑色边线可省略。本符号可以与凌乱空旷地（403、404）符号叠加以表示通视性。至少绘制两条清晰可见的蓝色线划。较小的区域必须被忽略、放大或使用符号不可穿越的水域（301）绘制。","icon":"images/isom2017img/307-Uncrossable-marsh.svg","standard":"isom2017"},{"code":"308","name":"可穿越的沼泽","name_en":"Marsh","description":"可穿越的有明显边界的沼泽。该符号必须与其他符号叠加使用,以显示通行性和通视性。","icon":"images/isom2017img/308-Marsh.svg","standard":"isom2017"},{"code":"309","name":"狭窄的沼泽","name_en":"Narrow marsh","description":"因太狭窄而不能用可穿越的沼泽（308）符号绘制的沼泽或涓涓细流。","icon":"images/isom2017img/309-Narrow-marsh.svg","standard":"isom2017"},{"code":"310","name":"不明显的沼泽","name_en":"Indistinct marsh","description":"可穿越的不明显的季节性沼泽或从沼泽到坚实地面的过渡区域。通常边界不明显，植被与周围区域相似。该符号必须与其他符号叠加以显示通行性和通视性。","icon":"images/isom2017img/310-Indistinct-marsh.svg","standard":"isom2017"},{"code":"311","name":"井、喷泉或蓄水池","name_en":"Small fountain or well","description":"突出的水井、喷泉、蓄水池或围起的泉源。","icon":"images/isom2017img/311-Small-fountain-or-well.svg","standard":"isom2017"},{"code":"312","name":"泉源","name_en":"Spring","description":"水的源头。","icon":"images/isom2017img/312-Spring.svg","standard":"isom2017"},{"code":"313","name":"突出的特殊水体","name_en":"Prominent water feature","description":"必须在地图上给出符号定义。","icon":"images/isom2017img/313-Prominent-water-feature.svg","standard":"isom2017"},{"code":"401","name":"空旷地","name_en":"Open land","description":"具有地面覆盖物（草，苔藓或类似植物）的空旷地，比典型的好跑树林（405）具有更好的通行性。如果地图中黄色区域占主导颜色比例时，则可以使用75％黄色代替100%黄色。除坑洼地面（113），石块地（208），可穿越的沼泽（308）和不明显的沼泽（310）以外，不得与其他面状符号叠加使用。","icon":"images/isom2017img/401-Open-land.svg","standard":"isom2017"},{"code":"402","name":"稀树空旷地","name_en":"Open land with scattered trees","description":"在黄色面状符号上排列规则的点状孔用以表示在空旷地上零散分布着零星树木或灌木丛的区域。这些点可以是白色（零散分布的乔木）或绿色（零散分布的灌木/灌木丛）。也可以使用符号突出的大树（417）来绘制特别突出的树。如果黄色区域占主导颜色比例时，则可以使用75％黄色代替100%黄色。更小的区域必须省略、夸大或用空旷地（401）绘制。","icon":"images/isom2017img/402-Open-land-with-scattered-trees.svg","standard":"isom2017"},{"code":"403","name":"凌乱空旷地","name_en":"Rough open land","description":"具有与典型好跑树林相同通行性的荒地、高沼地、砍伐地、新种植树木区或其他具有凌乱地表植被如：具有帚石楠地或高草地的空旷地。可与以下植被符号相叠加：通视性好的慢跑矮植被（407）或通视性好的慢行矮植被（409）以表示通行性降低。更小的区域必须省略、夸大或使用空旷地（401）绘制。","icon":"images/isom2017img/403-Rough-open-land.svg","standard":"isom2017"},{"code":"404","name":"凌乱稀树空旷地","name_en":"Rough open land with scattered trees","description":"在黄色面状符号上排列规则的点状图案用以表示在空地上零散分布着树木或灌木丛的区域。点可以是白色的（零散分布的乔木）或绿色的（零散分布的灌木/灌木丛）。只有使用带白色点的符号形式时可以与以下植被符号叠加使用以表示通行性降低：通视性好的慢跑矮植被（407）或通视性好的慢行矮植被（409）。更小的区域必须省略、夸大或使用凌乱空旷地（403）绘制。","icon":"images/isom2017img/404-Rough-open-land-with-scattered-trees.svg","standard":"isom2017"},{"code":"405","name":"好跑树林","name_en":"Forest","description":"典型的好跑树林。如果没有可以轻松通行的树林区域，则地图上不应出现白色。","icon":"images/isom2017img/405-Forest.svg","standard":"isom2017"},{"code":"406","name":"慢跑植被","name_en":"Vegetation slow running","description":"植被茂密（通视性较差）的区域，通行速度降低至正常速度的60-80％。在某方向上具有更好通行性时，应在30%绿色面状符号上叠加规则的白色条纹，以表示好跑的方向。","icon":"images/isom2017img/406-Vegetation-slow-running.svg","standard":"isom2017"},{"code":"407","name":"通视性好的慢跑矮植被","name_en":"Vegetation slow running good visibility","description":"通视性好但通行性降低至慢跑的下层矮植被，植被类型通常为矮灌木(荆棘、帚石楠、矮灌木丛、修剪后的树枝等)。奔跑速度降低至正常速度的60-80％。","icon":"images/isom2017img/407-Vegetation-slow-running-good-visibility.svg","standard":"isom2017"},{"code":"408","name":"慢行植被","name_en":"Vegetation walk","description":"有茂密树木或灌木丛（通视性低）的区域，通行速度降低至正常速度的20-60％。在某方向上具有更好通行性时，应在60%绿色面状符号上叠加规则的白色/30％绿色条纹，以表示好跑方向。","icon":"images/isom2017img/408-Vegetation-walk.svg","standard":"isom2017"},{"code":"409","name":"通视性好的慢行矮植被","name_en":"Vegetation walk good visibility","description":"通视性好但通行性降低至慢行的下层矮植被，植被类型通常为矮灌木（荆棘、帚石楠、矮灌木丛、修剪后的树枝等下层矮植被）。通行速度降低至正常速度的20-60％。使用符号难行植被（410）来绘制难以穿越或无法通行但通视性较好的区域。","icon":"images/isom2017img/409-Vegetation-walk-good-visibility.svg","standard":"isom2017"},{"code":"410","name":"难行植被","name_en":"Vegetation fight","description":"几乎无法通行的具有茂密植被（树木或灌木丛）的区域，通行速度降低至正常速度的20％以下。在某方向上具有更好通行性时，应在绿色面状符号上叠加规则的白色/30％绿色/60％绿色条纹，以表示好跑方向。","icon":"images/isom2017img/410-Vegetation-fight.svg","standard":"isom2017"},{"code":"412","name":"耕地","name_en":"Cultivated land","description":"耕地，通常用于种植农作物。通行性可能因所种植的农作物种类及季节而有所不同。对于种植农业林的区域，可以使用好跑树林（405）或稀树空旷地（402）代替本符号。由于通行性可能会有所不同，因此在线路设计时应避免穿越此类区域。该符号与符号禁区（709）叠加使用，以绘制禁止进入的耕地。","icon":"images/isom2017img/412-Cultivated-land.svg","standard":"isom2017"},{"code":"413","name":"果园","name_en":"Orchard","description":"通常以规则的方式种植果树或灌木的区域。规则点连线的方向可以表示种植方向。必须与符号空旷地（401）或凌乱空旷地（403）叠加使用。可以与通视性好的慢跑矮植被（407）或通视性好的慢行矮植被（409）叠加使用以表示通行性降低。","icon":"images/isom2017img/413-Orchard.svg","standard":"isom2017"},{"code":"414","name":"葡萄园或类似区域","name_en":"Vineyard or similar","description":"葡萄园或类似植被的种植区，种植着浓密的单行植被，但在种植方向上好跑。线的方向必须指示种植方向。应至少绘制三行清晰可见的绿色线划。必须与符号空旷地（401）或凌乱空旷地（403）叠加使用。","icon":"images/isom2017img/414-Vineyard-or-similar.svg","standard":"isom2017"},{"code":"415","name":"明显的种植界线","name_en":"Distinct cultivation boundary","description":"耕种植被（符号401、412、413、414）的界线或未用其他符号（围栏、墙、路径等）绘制的耕地之间的界线。","icon":"images/isom2017img/415-Distinct-cultivation-boundary.svg","standard":"isom2017"},{"code":"416","name":"明显的植被界线","name_en":"Distinct vegetation boundary","description":"树林中明显的植被分界线或明显的树林界线。在同一幅地图上只能使用一种植被界线符号（黑色虚线或绿色虚线）。对于具有大量岩石特征的区域，建议使用绿色虚线的植被界线。绿色虚线的缺点是不能用于绘制难行植被（410）周围和内部的明显的植被界线。这种情况下的解决方法是使用符号明显的种植界线（415）代替。","icon":"images/isom2017img/416-Distinct-vegetation-boundary.svg","standard":"isom2017"},{"code":"417","name":"突出的大树","name_en":"Prominent large tree","description":"突出的独立大树（乔木），在绿色圆圈下方叠加白色底色，以提高其在黄色和绿色符号中的易读性。","icon":"images/isom2017img/417-Prominent-large-tree.svg","standard":"isom2017"},{"code":"418","name":"突出的灌木或树","name_en":"Prominent bush or small tree","description":"突出的独立灌木或乔木，应谨慎使用此符号，因为它很容易被误认为是圆形土堆（109）符号。内部的小白点用来帮助色觉受损的运动员辨别符号。","icon":"images/isom2017img/418-Prominent-bush-or-small-tree.svg","standard":"isom2017"},{"code":"419","name":"突出的特殊植被","name_en":"Prominent vegetation feature","description":"白色底色叠加在绿×下使用，以提高其在黄色和绿色符号中的易读性。必须在地图上给出符号定义。","icon":"images/isom2017img/419-Prominent-vegetation-feature.svg","standard":"isom2017"},{"code":"501","name":"铺装地面","name_en":"Paved area","description":"有坚硬表面如沥青、硬砾石、瓷砖、混凝土等的区域。铺装地面在实地有明显界线时应绘制一条黑线作为边线（或轮廓）。","icon":"images/isom2017img/501-Paved-area.svg","standard":"isom2017"},{"code":"502","name":"宽公路","name_en":"Wide road","description":"宽度应依比例绘制。如果特征物例如围栏（516）、难以穿越的围栏（518）、墙（513）或难以翻越的墙（515）距离道路边缘很近，导致绘制时无法将其显示为单独的符号，则可将公路外侧边线替换为其它黑色线状符号。黑线之间填充50%棕色。一条有两列车道的公路可以用两个宽公路符号并排绘制，但只在中间保留一条道路边线。","icon":"images/isom2017img/502-Wide-road.svg","standard":"isom2017"},{"code":"503","name":"公路","name_en":"Road","description":"公路。","icon":"images/isom2017img/503-Road.svg","standard":"isom2017"},{"code":"504","name":"车道","name_en":"Vehicle track","description":"无养护的车道:仅适合低速驶车的车道或无养护的公路。对于明显的路口，交会点处于实线线划部位。对于不明显的路口，在交会点处不连接。","icon":"images/isom2017img/504-Vehicle-track.svg","standard":"isom2017"},{"code":"505","name":"步道","name_en":"Footpath","description":"好跑的步道、自行车道或旧车道。对于明显的路口，交会点处于实线线划部位。对于不明显的路口，在交会点处不连接。","icon":"images/isom2017img/505-Footpath.svg","standard":"isom2017"},{"code":"506","name":"小径","name_en":"Small footpath","description":"泛指小路。可跑的小径或（临时）林业采伐道，可以按比赛速度奔跑。对于明显的路口，交会点处于实线线划部位。对于不明显的路口，在交会点处不连接。","icon":"images/isom2017img/506-Small-footpath.svg","standard":"isom2017"},{"code":"507","name":"不明显小径","name_en":"Less distinct small footpath","description":"不突出或不明显的可跑小径或林业采伐道。","icon":"images/isom2017img/507-Less-distinct-small-footpath.svg","standard":"isom2017"},{"code":"508","name":"林中带状空隙","name_en":"Narrow ride or linear trace through the terrain","description":"在没有明显可跑路径地形上的树林空隙(例如：林间采伐道，沙质道，滑雪道)或线性痕迹。通行性与周围环境不同时用稍粗的黄色、绿色或白色底色线条叠加绘制。无底色线条时：代表与周围环境具有相同的通行性。100%黄色：易跑。绿色中叠加白色背景线：正常奔跑速度。30%绿色：慢跑。60%绿色：慢行。","icon":"images/isom2017img/508-Narrow-ride-or-linear-trace-through-the-terrain.svg","standard":"isom2017"},{"code":"509","name":"铁路","name_en":"Railway","description":"铁路或其他类型的有轨轨道。如果禁止沿铁路奔跑时必须与禁行路线（711）叠加使用。如果铁路禁止翻越，必须与禁区（520）或禁区（709）叠加使用。","icon":"images/isom2017img/509-Railway.svg","standard":"isom2017"},{"code":"510","name":"输电线、索道或滑雪缆车线","name_en":"Power line cableway or skilift","description":"输电线、索道或滑雪缆车线。横线表示塔架的实际位置。为了提高易读性，绘制时主线可能会被剪断。如果某段电力线、索道或滑雪缆车线沿着道路或小径架设（且不提供明显的导航价值）则应省略。","icon":"images/isom2017img/510-Power-line-cableway-or-skilift.svg","standard":"isom2017"},{"code":"511","name":"主干输电线","name_en":"Major powerline","description":"主干输电线应使用双线绘制。双线之间的间距可以表示输电线的横向范围。为了提高易读性，主线可以会被剪断。横线表示塔架的实际位置。超大承重塔架必须使用建筑物（521）符号按平面轮廓绘制或使用符号高塔（524）。","icon":"images/isom2017img/511-Major-powerline.svg","standard":"isom2017"},{"code":"512","name":"桥梁/隧道","name_en":"Bridge or tunnel","description":"桥梁和隧道用相同的基础符号绘制。如果隧道（或桥下）无法通过，则必须省略此符号。连接车道/路径的小桥应将路径的线划中心放在通过处。路径在穿过水道处剪断表示没有桥梁。两侧无路连接的小步桥用一段横线绘制。","icon":"images/isom2017img/512-Bridge-or-tunnel.svg","standard":"isom2017"},{"code":"513.1","name":"可翻越的墙","name_en":"Wall","description":"由石头、混凝土、木头或其他材料搭建的重要墙体。","icon":"images/isom2017img/513.1-Wall.svg","standard":"isom2017"},{"code":"513.2","name":"可翻越的挡土墙","name_en":"Retained wall","description":"由石头、混凝土、木材或其他材料搭建的仅从一侧可见的可翻越的挡土墙。半点必须指向较低的一侧。","icon":"images/isom2017img/513.2-Retained-wall.svg","standard":"isom2017"},{"code":"514","name":"残破的墙","name_en":"Ruined wall","description":"残破的或不明显的墙。","icon":"images/isom2017img/514-Ruined-wall.svg","standard":"isom2017"},{"code":"515","name":"难以翻越的墙","name_en":"Impassable wall","description":"难以翻越的墙。","icon":"images/isom2017img/515-Impassable-wall.svg","standard":"isom2017"},{"code":"516","name":"围栏","name_en":"Fence","description":"若围栏形成封闭区域，则齿线应朝向封闭区域内。","icon":"images/isom2017img/516-Fence.svg","standard":"isom2017"},{"code":"517","name":"残破的围栏","name_en":"Ruined fence","description":"残破的或不明显的围栏。若围栏形成封闭区域，则齿线应朝向封闭区域内。","icon":"images/isom2017img/517-Ruined-fence.svg","standard":"isom2017"},{"code":"518","name":"难以穿越的围栏","name_en":"Impassable fence","description":"若围栏形成封闭区域，则齿线应朝向封闭区域内。","icon":"images/isom2017img/518-Impassable-fence.svg","standard":"isom2017"},{"code":"519","name":"通过点","name_en":"Crossing point","description":"可穿过或翻越墙壁、围栏或其他线形特征的位置，包括围栏门或翻越围墙、围栏所用的台阶、梯凳。对于难以穿越的特征物，在通过点处必须剪断。对于可翻越的特征物，如果通过点涉及一定程度的爬升，则在通过点处不得剪断。","icon":"images/isom2017img/519-Crossing-point.svg","standard":"isom2017"},{"code":"520","name":"禁区","name_en":"Area that shall not be entered","description":"例如私人住宅、花园、工厂或其他工业区等特征的禁止进入的区域。只有等高线和突出特征才可以绘制在禁区内，如铁路和大型建筑物等。黑色垂直线条纹符号可用于显示地形完整绘制的重要区域（例如，当森林的一部分是禁止进入的区域时）。当有道路或小径穿过时，此部分禁区符号应中断绘制。边界清晰的禁止进入的区域，应以黑色边线或其他类型的黑色线绘制，如果边界不清晰，则不得绘制黑色边线。临时禁区可使用线路设计符号709绘制。该符号的黑色垂直条纹朝北。不得进入禁区内部。","icon":"images/isom2017img/520-Area-that-shall-not-be-entered.svg","standard":"isom2017"},{"code":"521","name":"建筑物","name_en":"Building","description":"在条件允许的情况下，应依比例绘制所有建筑物的平面图。应简化绘制禁止进入区内的建筑物。不得绘制完全包含在建筑物内的区域（应绘制为建筑物的一部分）。","icon":"images/isom2017img/521-Building.svg","standard":"isom2017"},{"code":"522","name":"可通行建筑物","name_en":"Canopy","description":"可无障碍通行的有屋顶的建筑结构。","icon":"images/isom2017img/522-Canopy.svg","standard":"isom2017"},{"code":"523","name":"废墟","name_en":"Ruin","description":"毁坏或倒塌的建筑物。应依比例绘制废墟的平面轮廓。小到无法依比例绘制的废墟可以用实线绘制。100% 50%黄色绿色可选黑色 0.75 1.0 x 1.0 0.8 x 0.80.160.25 0.5。","icon":"images/isom2017img/523-Ruin.svg","standard":"isom2017"},{"code":"524","name":"高塔","name_en":"High tower","description":"高塔或大型塔架。如果它在森林中，必须高于周围森林可见。占地面积较大的塔必须使用符号建筑物（521）绘制。","icon":"images/isom2017img/524-High-tower.svg","standard":"isom2017"},{"code":"525","name":"小塔","name_en":"Small tower","description":"突出的小塔，平台或底座。","icon":"images/isom2017img/525-Small-tower.svg","standard":"isom2017"},{"code":"526","name":"堆石标","name_en":"Cairn","description":"突出的堆石标（山顶标志或墓碑）、纪念碑、小纪念碑、界碑、边界石标或测绘三角点石标。","icon":"images/isom2017img/526-Cairn.svg","standard":"isom2017"},{"code":"527","name":"饲料架","name_en":"Fodder rack","description":"单独或附着在树上的饲料架。","icon":"images/isom2017img/527-Fodder-rack.svg","standard":"isom2017"},{"code":"528","name":"突出的线状地物","name_en":"Prominent line feature","description":"突出的人工线状地物。例如：较低的管道（输送天然气、水、石油、热力等）或清晰可见的雪橇/旱橇轨。必须在地图上给出符号的定义。","icon":"images/isom2017img/528-Prominent-line-feature.svg","standard":"isom2017"},{"code":"529","name":"突出的难以翻越的线状地物","name_en":"Prominent impassable line feature","description":"难以翻越的突出人工线状地物。例如：高管道（输送天然气、水、石油、热力等）或雪橇/旱橇轨。必须在地图上给出符号的定义。","icon":"images/isom2017img/529-Prominent-impassable-line-feature.svg","standard":"isom2017"},{"code":"530","name":"突出的特殊人工地物-〇","name_en":"Prominent man made feature ring","description":"必须在地图上给出符号定义。","icon":"images/isom2017img/530-Prominent-man-made-feature-ring.svg","standard":"isom2017"},{"code":"531","name":"突出的特殊人工地物-×","name_en":"Prominent man made feature x","description":"必须在地图上给出符号定义。","icon":"images/isom2017img/531-Prominent-man-made-feature-x.svg","standard":"isom2017"},{"code":"532","name":"阶梯","name_en":"Stairway","description":"穿越或翻越特征物的明显阶梯，有助于爬上非常陡峭的山坡或翻越难以翻越的特征物。通过石崖通道或难以翻越的特征物之间的阶梯可以不绘制边线。容易通行的阶梯或不明显的阶梯必须绘制为小径。阶梯的阶线必须使用综合的方式绘制。","icon":"images/isom2017img/532-Stairway.svg","standard":"isom2017"},{"code":"601","name":"磁北线","name_en":"Magnetic north line","description":"磁北线是地图上指向磁北，与纸张的侧边平行的线。当磁北线遮挡小细节时必须剪断它们以提高地图的易读性。在水系很少的地区，可以使用蓝线。","icon":"images/isom2017img/601-Magnetic-north-line.svg","standard":"isom2017"},{"code":"602","name":"十字套准线","name_en":"Registration mark","description":"地图的四角可放置至少三个十字套准线。这些套准线用于在已经印刷好的地图上打印线路图。此外，它还可以用于检查分色印刷时是否印准。","icon":"images/isom2017img/602-Registration-mark.svg","standard":"isom2017"},{"code":"603","name":"高程注记","name_en":"Spot height","description":"高程注记用于粗略估计高程。以米（m）为单位绘制附近的高程。水面高程不需要绘制注记点。高程注记放置在不遮挡其他符号的位置。","icon":"images/isom2017img/603-Spot-height.svg","standard":"isom2017"},{"code":"701","name":"起点","name_en":"Start","description":"定向运动比赛开始的地方。三角形的中心是定向运动线路起点的精确位置。起点必须在地图清晰可辨认的位置。三角形其中一个顶点指向第一个检查点的方向。","icon":"images/isom2017img/701-Start.svg","standard":"isom2017"},{"code":"702","name":"取图点","name_en":"Map issue point","description":"如果有前往起点的必经线路，则使用此符号标记取图点。","icon":"images/isom2017img/702-Map-issue-point.svg","standard":"isom2017"},{"code":"703","name":"检查点","name_en":"Control point","description":"对于点状特征物，检查点的中心必须为点状特征物符号的中心。对于线状和面状特征物，检查点的中心表示点标旗的精确位置。检查点必须放置在地图清晰可见的位置。遮挡的重要细节处的圆圈部分应剪断。","icon":"images/isom2017img/703-Control-point.svg","standard":"isom2017"},{"code":"704","name":"检查点序号","name_en":"Control number","description":"检查点序号靠近检查点圆圈放置，但禁止遮挡地图的重要细节。","icon":"images/isom2017img/704-Control-number.svg","standard":"isom2017"},{"code":"705","name":"线路连线","name_en":"Course line","description":"如果需按顺序到访检查点，则用直线从起点到第一个检查点，然后依次连接剩下的检查点来显示顺序。遮挡重要细节时应剪断此部分的连线。连线需要指向经过的强制通过点。为了增加靠近检查点圆圈底层细节的易读性，连线与圆圈之间应留有间隙。","icon":"images/isom2017img/705-Course-line.svg","standard":"isom2017"},{"code":"706","name":"终点","name_en":"Finish","description":"线路结束处。","icon":"images/isom2017img/706-Finish.svg","standard":"isom2017"},{"code":"707","name":"必经线路","name_en":"Marked route","description":"有标记的一段线路，必经线路是线路的一部分。必须沿必经线路行进。","icon":"images/isom2017img/707-Marked-route.svg","standard":"isom2017"},{"code":"708","name":"禁过线","name_en":"Out-of-bounds boundary","description":"禁止穿越的界线。禁止穿越本符号。","icon":"images/isom2017img/708-Out-of-bounds-boundary.svg","standard":"isom2017"},{"code":"709","name":"禁区","name_en":"Out-of-bounds area","description":"禁入的区域。如果没有自然边界，则可以如下绘制边线： • 实线表示禁区边界在实地有连续的标志物（警戒带等）。• 虚线表示禁区边界在实地有不连续的标志物。• 无边线表示禁区边界在实地没有标志物。禁止进入禁区。","icon":"images/isom2017img/709-Out-of-bounds-area.svg","standard":"isom2017"},{"code":"710","name":"通过点","name_en":"Crossing point","description":"例如穿越或翻越墙、围栏、公路、铁路、隧道、禁区、禁过线的通过点，本符号在地图上用绘有两条向外弯曲的线绘制。这些线必须依比例绘制。","icon":"images/isom2017img/710-Crossing-point.svg","standard":"isom2017"},{"code":"711","name":"禁行路线","name_en":"Out-of-bounds route","description":"禁行的路线。运动员可以快速横穿禁行路线，但不得沿该路线行进。禁行路线不得独立使用时。","icon":"images/isom2017img/711-Out-of-bounds-route.svg","standard":"isom2017"},{"code":"712","name":"急救点","name_en":"First aid post","description":"提供医疗急救服务的位置。","icon":"images/isom2017img/712-First-aid-post.svg","standard":"isom2017"},{"code":"713","name":"补给点","name_en":"Refreshment point","description":"与检查点不在同一位置的补给点。","icon":"images/isom2017img/713-Refreshment-point.svg","standard":"isom2017"}];
@@ -560,6 +606,16 @@ const $overlayImg = document.getElementById('overlayImg');
 const $searchClear = document.getElementById('searchClear');
 const $scrollTopBtn = document.getElementById('scrollTopBtn');
 const $viewSwitch = document.querySelector('.view-switch');
+const $fieldReference = document.getElementById('fieldReference');
+const $fieldReferenceJump = document.getElementById('fieldReferenceJump');
+const $fieldReferenceCount = document.getElementById('fieldReferenceCount');
+const $fieldReferenceGrid = document.getElementById('fieldReferenceGrid');
+const FIELD_REFERENCE_DATA = window.FIELD_REFERENCE_DATA || {};
+
+function getFieldReferences(item) {
+  if (!item) return [];
+  return FIELD_REFERENCE_DATA[item.standard + ':' + getCode(item)] || [];
+}
 
 function cloneCollapsedState() {
   return JSON.parse(JSON.stringify(listCollapsedState));
@@ -633,7 +689,8 @@ function renderCard(item) {
   var name_zh = getName(item);
   var name_en = item.name_en || '';
   var image = getIcon(item);
-  var label = STD_LABELS[item.standard] + ' ' + id + ' ' + name_zh;
+  var fieldReferences = getFieldReferences(item);
+  var label = STD_LABELS[item.standard] + ' ' + id + ' ' + name_zh + (fieldReferences.length ? '，有实地参考' : '');
   var html = '<button type="button" class="card" data-std="' + item.standard + '" data-id="' + id + '" aria-label="查看' + escHtml(label) + '">' +
     '<div class="img-col"><div class="img-wrap"><img src="' + image + '" alt="' + escHtml(id + ' ' + name_zh) + '" loading="lazy" onerror="this.alt=\'🖼️\';this.style.width=\'28px\';this.style.height=\'28px\'"></div></div>' +
     '<div class="text-col">' +
@@ -645,6 +702,9 @@ function renderCard(item) {
   }
   if (item.description) {
     html += '<div class="desc">' + searchText(item.description).replace(/\n/g, '<br>') + '</div>';
+  }
+  if (fieldReferences.length) {
+    html += '<span class="field-ref-badge">实地参考 · ' + fieldReferences.length + ' 张</span>';
   }
   html += '</div></button>';
   return html;
@@ -770,8 +830,8 @@ function renderList(items, groupByStd, isSearch) {
       var std = stdOrder[s];
       if (!groups[std] || groups[std].length === 0) continue;
       var stdItems = groups[std];
-      // 默认 ISSprOM 展开，其他折叠，除非用户手动切换过
-      var isCollapsed = allState[std] !== undefined ? allState[std] : (std !== 'issprom2019');
+      // 全部视图默认折叠各标准，让页脚可留在首屏底部；用户可点开查看
+      var isCollapsed = allState[std] !== undefined ? allState[std] : true;
       var collapsedCls = isCollapsed ? ' collapsed' : '';
       html += '<div class="group-header' + collapsedCls + '" data-std-group="' + std + '">';
       html += '<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
@@ -796,6 +856,7 @@ function showStandard(std, skipHash) {
     listScrollPos[prevStandard] = window.scrollY;
   }
   currentStandard = std;
+  document.body.classList.toggle('all-tab-view', std === 'all');
   // 更新标准用途说明（"全部"不显示）
   if (std === 'all') {
     $stdDesc.textContent = '';
@@ -904,6 +965,7 @@ function searchAll(query, skipHistory) {
   }
   if (!isSearchMode) searchBaseStandard = currentStandard;
   isSearchMode = true;
+  document.body.classList.remove('all-tab-view');
   currentSearchQuery = q;
   searchFilterStandard = searchBaseStandard || 'all';
   $tabBar.querySelectorAll('.tab').forEach(function(t) {
@@ -927,6 +989,7 @@ function showListPage() {
 
 function showDetailPage() {
   document.body.classList.add('detail-mode');
+  document.body.classList.remove('all-tab-view');
   $listPage.style.display = 'none';
   $detailPage.classList.add('show');
   syncDetailNavTop();
@@ -1110,6 +1173,23 @@ function renderDetail() {
 
   $descCard.innerHTML = paragraphs.map(function(p) {
     return '<p>' + escHtml(p) + '</p>';
+  }).join('');
+
+  var fieldReferences = getFieldReferences(item);
+  $fieldReference.hidden = fieldReferences.length === 0;
+  $fieldReferenceJump.hidden = fieldReferences.length === 0;
+  $fieldReferenceJump.textContent = fieldReferences.length ? '查看实地参考 · ' + fieldReferences.length + ' 张' : '';
+  $fieldReferenceCount.textContent = fieldReferences.length ? fieldReferences.length + ' 张照片' : '';
+  $fieldReferenceGrid.innerHTML = fieldReferences.map(function(reference) {
+    var caption = reference.caption || name_zh;
+    var alt = name_zh + '实地参考：' + caption;
+    return '<figure class="field-reference-card">' +
+      '<button type="button" class="field-reference-image-button" data-field-ref-image="' + escHtml(reference.image) + '" aria-label="放大查看' + escHtml(alt) + '">' +
+        '<img src="' + escHtml(reference.image) + '" alt="' + escHtml(alt) + '" loading="lazy">' +
+        '<span class="field-reference-zoom">点击放大</span>' +
+      '</button>' +
+      '<figcaption>' + escHtml(caption) + '<small>对照表 · 第 ' + reference.page + ' 页</small></figcaption>' +
+    '</figure>';
   }).join('');
 
   // Update navigation
@@ -1532,6 +1612,22 @@ $detailImgWrap.addEventListener('click', function() {
   $overlayImg.style.transform = '';
   $imgOverlay.classList.add('show');
   document.body.style.overflow = 'hidden';
+});
+
+$fieldReferenceGrid.addEventListener('click', function(e) {
+  var button = e.target.closest('[data-field-ref-image]');
+  if (!button) return;
+  var image = button.querySelector('img');
+  if (!image || !image.complete || !image.naturalWidth) return;
+  $overlayImg.src = image.src;
+  $overlayImg.alt = image.alt;
+  $overlayImg.style.transform = '';
+  $imgOverlay.classList.add('show');
+  document.body.style.overflow = 'hidden';
+});
+
+$fieldReferenceJump.addEventListener('click', function() {
+  $fieldReference.scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
 
 function closeOverlay() {
